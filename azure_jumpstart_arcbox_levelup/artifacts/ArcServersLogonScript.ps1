@@ -15,6 +15,7 @@ if (-not $($cliDir.Parent.Attributes.HasFlag([System.IO.FileAttributes]::Hidden)
 # Install Azure CLI extensions
 Write-Header "Az CLI extensions"
 az extension add --yes --name ssh
+az extension add --yes --name connectedmachine
 
 $Env:AZURE_CONFIG_DIR = $cliDir.FullName
 
@@ -28,6 +29,12 @@ az provider register --namespace Microsoft.HybridCompute --wait
 az provider register --namespace Microsoft.HybridConnectivity --wait
 az provider register --namespace Microsoft.GuestConfiguration --wait
 az provider register --namespace Microsoft.AzureArcData --wait
+
+# Deploy SQLAdvancedThreatProtection solution to support Defender for SQL
+Write-Host "Deploying SQLAdvancedThreatProtection solution to support Defender for SQL server."
+# Install log-analytics-solution cli extension
+az extension add --name log-analytics-solution --yes
+az monitor log-analytics solution create --resource-group $Env:resourceGroup --solution-type SQLAdvancedThreatProtection --workspace $Env:workspaceName
 
 # Install and configure DHCP service (used by Hyper-V nested VMs)
 Write-Header "Configuring DHCP Service"
@@ -169,8 +176,16 @@ $resourceGroup = $env:resourceGroup
 $azureLocation = $Env:azureLocation
 
 #Invoke-Command -VMName $JSLUWinSQL01 -ScriptBlock { powershell -File $Using:nestedVMArcBoxDir\installArcAgent.ps1 -spnClientId $Using:spnClientId, -spnClientSecret $Using:spnClientSecret, -spnTenantId $Using:spnTenantId, -subscriptionId $Using:subscriptionId, -resourceGroup $Using:resourceGroup, -azureLocation $Using:azureLocation} -Credential $winCreds
+# Install Log Analytics extension
+# Get workspace information
+$workspaceID = (az monitor log-analytics workspace show --resource-group $resourceGroup --workspace-name $Env:workspaceName --query "customerId" -o tsv)
+$workspaceKey = (az monitor log-analytics workspace get-shared-keys --resource-group $resourceGroup --workspace-name $Env:workspaceName --query "primarySharedKey" -o tsv)
+
 Invoke-Command -VMName $JSLUWinSQL02 -ScriptBlock { powershell -File $Using:nestedVMArcBoxDir\installArcAgent.ps1 -spnClientId $Using:spnClientId, -spnClientSecret $Using:spnClientSecret, -spnTenantId $Using:spnTenantId, -subscriptionId $Using:subscriptionId, -resourceGroup $Using:resourceGroup, -azureLocation $Using:azureLocation} -Credential $winCreds
+#az connectedmachine extension create --machine-name $JSLUWinSQL02 --name "MicrosoftMonitoringAgent" --settings "{'workspaceId':'$workspaceID'}" --protected-settings "{'workspaceKey':'$workspaceKey'}" --resource-group $resourceGroup --type-handler-version "1.0.18067.0" --type "MicrosoftMonitoringAgent" --publisher "Microsoft.EnterpriseCloud.Monitoring"
+
 Invoke-Command -VMName $JSLUWinSQL03 -ScriptBlock { powershell -File $Using:nestedVMArcBoxDir\installArcAgent.ps1 -spnClientId $Using:spnClientId, -spnClientSecret $Using:spnClientSecret, -spnTenantId $Using:spnTenantId, -subscriptionId $Using:subscriptionId, -resourceGroup $Using:resourceGroup, -azureLocation $Using:azureLocation } -Credential $winCreds 
+az connectedmachine extension create --machine-name $JSLUWinSQL03 --name "MicrosoftMonitoringAgent" --settings "{'workspaceId':'$workspaceID'}" --protected-settings "{'workspaceKey':'$workspaceKey'}" --resource-group $resourceGroup --type-handler-version "1.0.18067.0" --type "MicrosoftMonitoringAgent" --publisher "Microsoft.EnterpriseCloud.Monitoring"
 
 # Creating Hyper-V Manager desktop shortcut
 Write-Header "Creating Hyper-V Shortcut"
