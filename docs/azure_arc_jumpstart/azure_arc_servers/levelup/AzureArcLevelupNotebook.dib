@@ -72,15 +72,20 @@ az login
 
 #!markdown
 
+- Set the default subscription using Azure CLI.
+
+#!pwsh
+
+$subscriptionId = "<Subscription Id>"  # Replace with your subscriptionId
+az account set -s $subscriptionId
+
+#!markdown
+
 - [Install or update Azure PowerShell](https://learn.microsoft.com/powershell/azure/install-azps-windows?view=azps-10.3.0&tabs=windowspowershell&pivots=windows-psgallery). Use the below command to check if its installed.
 
 #!pwsh
 
 Get-module -Name Az.Accounts -listavailable
-
-#!pwsh
-
-Import-module -name Az
 
 #!markdown
 
@@ -88,16 +93,7 @@ Import-module -name Az
 
 #!pwsh
 
-Connect-AzAccount -UseDeviceAuthentication
-
-#!markdown
-
-- Set the default subscription using Azure CLI.
-
-#!pwsh
-
-$subscriptionId = "<Subscription Id>"  # Replace with your subscriptionId
-az account set -s $subscriptionId
+Connect-AzAccount
 
 #!markdown
 
