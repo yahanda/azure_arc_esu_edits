@@ -1518,7 +1518,7 @@ Due to using MOF-based DSC resources for the Windows demo-configuration, we are 
 
   ```PowerShell
   $storageaccountsuffix = -join ((97..122) | Get-Random -Count 5 | % {[char]$_})
-  New-AzStorageAccount -ResourceGroupName $resourceGroupName -Name "machineconfigstg$storageaccountsuffix" -SkuName 'Standard_LRS' -Location $Location -OutVariable storageaccount | New-AzStorageContainer -Name machineconfiguration -Permission Blob
+  New-AzStorageAccount -ResourceGroupName $resourceGroupName -Name "machineconfigstg$storageaccountsuffix" -SkuName 'Standard_LRS' -Location $Location -OutVariable storageaccount | New-AzStorageContainer -Name machineconfiguration -Permission Blob -EnableHttpsTrafficOnly $true
   ```
 
 - Create the custom configuration
@@ -1541,7 +1541,7 @@ Due to using MOF-based DSC resources for the Windows demo-configuration, we are 
       {
           MsiPackage PS7
           {
-              ProductId = '{323AD147-6FC4-40CB-A810-2AADF26D868A}'
+              ProductId = '{3E1D544C-E761-430F-B278-43E9FBFF0E4F}'
               Path = 'https://github.com/PowerShell/PowerShell/releases/download/v7.3.2/PowerShell-7.3.2-win-x64.msi'
               Ensure = 'Present'
           }
@@ -1574,7 +1574,7 @@ Due to using MOF-based DSC resources for the Windows demo-configuration, we are 
           }
       )
   }
-  $OutputPath = "$HOME/arc_automanage_machine_configuration_custom_windows"
+  $OutputPath = "$Env:ArcBoxDir/arc_automanage_machine_configuration_custom_windows"
   New-Item $OutputPath -Force -ItemType Directory
   ```
 
@@ -1691,8 +1691,13 @@ Due to using MOF-based DSC resources for the Windows demo-configuration, we are 
 - To verify that the operating system level settings are in place, run the following commands:
 
   ```powershell
-   Invoke-Command -VMName $Win2k19vmName -ScriptBlock { Get-LocalUser -Name arcboxuser1 } -Credential $winCreds
-   Invoke-Command -VMName $Win2k19vmName -ScriptBlock {  Get-WindowsFeature -Name FS-SMB1 | select  DisplayName,Installed,InstallState} -Credential $winCreds
+  Write-Host "Creating VM Credentials"
+  $nestedWindowsUsername = "Administrator"
+  $secWindowsPassword = ConvertTo-SecureString $nestedWindowsPassword -AsPlainText -Force
+  $winCreds = New-Object System.Management.Automation.PSCredential ($nestedWindowsUsername, $secWindowsPassword)
+
+  Invoke-Command -VMName $Win2k19vmName -ScriptBlock { Get-LocalUser -Name arcboxuser1 } -Credential $winCreds
+  Invoke-Command -VMName $Win2k19vmName -ScriptBlock {  Get-WindowsFeature -Name FS-SMB1 | select  DisplayName,Installed,InstallState} -Credential $winCreds
   ```
 
   ![Screenshot of VScode showing Azure Machine Configuration validation on Windows](./vscode_win_machine_config_validation.png)

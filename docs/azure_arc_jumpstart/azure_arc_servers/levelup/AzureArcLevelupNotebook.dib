@@ -646,7 +646,7 @@ In this module, you will learn how to enable and leverage Microsoft Defender for
 ## Run this cell to copy the commands to your Clipboard
 
 $scriptText = @"
-`$remoteScriptFile = `"$agentScript\testDefenderForServers.ps1`"
+`$remoteScriptFile = "`$agentScript\testDefenderForServers.ps1`"
 `$Win2k22vmName = `"ArcBox-Win2K22`"
 `$nestedWindowsUsername = `"Administrator`"
 `$nestedWindowsPassword = `"ArcDemo123!!`"
@@ -1723,11 +1723,9 @@ Due to using MOF-based DSC resources for the Windows demo-configuration, we are 
 ## Run this cell to copy the commands to your Clipboard
 
 $scriptText = @"
-`$storageaccountsuffix = -join ((97..122) | Get-Random -Count 5 | % {[char]})
-New-AzStorageAccount -ResourceGroupName `$resourceGroupName -Name "machineconfigstg`$storageaccountsuffix"
-                     -SkuName 'Standard_LRS'
-                     -Location `$Location
-                     -OutVariable storageaccount | New-AzStorageContainer -Name machineconfiguration  -Permission Blob
+`$storageaccountsuffix = -join ((97..122) | Get-Random -Count 5 | % {[char]`$_})
+
+New-AzStorageAccount -ResourceGroupName `$resourceGroupName -Name "machineconfigstg`$storageaccountsuffix" -SkuName 'Standard_LRS' -Location `$Location -OutVariable storageaccount | New-AzStorageContainer -Name machineconfiguration  -Permission Blob -EnableHttpsTrafficOnly `$true
 "@
 
 Set-Clipboard -Value $scriptText | Out-Null
@@ -1760,7 +1758,7 @@ Configuration AzureArcLevelUp_Windows
     {
         MsiPackage PS7
         {
-            ProductId = '{323AD147-6FC4-40CB-A810-2AADF26D868A}'
+            ProductId = '{3E1D544C-E761-430F-B278-43E9FBFF0E4F}'
             Path = 'https://github.com/PowerShell/PowerShell/releases/download/v7.3.2/PowerShell-7.3.2-win-x64.msi'
             Ensure = 'Present'
         }
@@ -1795,7 +1793,7 @@ Write-Host "Creating credentials for arcbox user 1"
     )
 }
 
-`$OutputPath = "$HOME/arc_automanage_machine_configuration_custom_windows"
+`$OutputPath = "`$Env:ArcBoxDir/arc_automanage_machine_configuration_custom_windows"
 New-Item `$OutputPath -Force -ItemType Directory
 "@
 
@@ -1828,12 +1826,7 @@ Write-Host "Copied!!"
 ## Run this cell to copy the commands to your Clipboard
 
 $scriptText = @"
-New-GuestConfigurationPackage
--Name 'AzureArcLevelUp_Windows'
--Configuration "`$OutputPath/localhost.mof"
--Type AuditAndSet
--Path `$OutputPath
--Force
+New-GuestConfigurationPackage -Name 'AzureArcLevelUp_Windows' -Configuration "`$OutputPath/localhost.mof" -Type AuditAndSet -Path `$OutputPath -Force
 "@
 
 Set-Clipboard -Value $scriptText | Out-Null
@@ -1890,15 +1883,7 @@ Write-Host "Copied!!"
 $scriptText = @"
 `$PolicyId = (New-Guid).Guid
 
-New-GuestConfigurationPolicy -PolicyId `$PolicyId
-                             -ContentUri `$ContentUri
-                             -DisplayName '(AzureArcJumpstart) [Windows] Custom configuration'
-                             -Description 'Azure Arc Jumpstart Windows demo configuration'
-                             -Path  `$OutputPath
-                             -Platform 'Windows'
-                             -PolicyVersion 1.0.0
-                             -Mode ApplyAndAutoCorrect
-                             -Verbose -OutVariable Policy
+New-GuestConfigurationPolicy -PolicyId `$PolicyId -ContentUri `$ContentUri -DisplayName '(AzureArcJumpstart) [Windows] Custom configuration' -Description 'Azure Arc Jumpstart Windows demo configuration' -Path  `$OutputPath -Platform 'Windows' -PolicyVersion 1.0.0 -Mode ApplyAndAutoCorrect -Verbose -OutVariable Policy
 
 `$PolicyParameterObject = @{'IncludeArcMachines'='true'}
 
@@ -1953,7 +1938,7 @@ Start-Sleep 20
 if (`$roleDefinitionIds.Count -gt 0)
  {
      `$roleDefinitionIds | ForEach-Object {
-         `$roleDefId = $_.Split("/") | Select-Object -Last 1
+         `$roleDefId = `$_.Split("/") | Select-Object -Last 1
          New-AzRoleAssignment -Scope `$resourceGroup.ResourceId -ObjectId `$PolicyAssignment.Identity.PrincipalId -RoleDefinitionId `$roleDefId
      }
  }
@@ -1998,6 +1983,14 @@ Write-Host "Copied!!"
 ## Run this cell to copy the commands to your Clipboard
 
 $scriptText = @"
+Write-Host "Creating VM Credentials"
+
+`$nestedWindowsUsername = "Administrator"
+
+`$secWindowsPassword = ConvertTo-SecureString `$nestedWindowsPassword -AsPlainText -Force
+
+`$winCreds = New-Object System.Management.Automation.PSCredential (`$nestedWindowsUsername, `$secWindowsPassword)
+
 Invoke-Command -VMName `$Win2k19vmName -ScriptBlock { Get-LocalUser -Name arcboxuser1 } -Credential `$winCreds
 
 Invoke-Command -VMName `$Win2k19vmName -ScriptBlock {  Get-WindowsFeature -Name FS-SMB1 | select  DisplayName,Installed,InstallState} -Credential `$winCreds
