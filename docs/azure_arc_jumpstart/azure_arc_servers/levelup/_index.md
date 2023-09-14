@@ -47,12 +47,13 @@ There are two ways to get access to the lab modules and guidance.
 1. You can use this GitHub repository.
 2. You can download the LevelUp Notebook which is an interactive guide that you can open using VSCode to walk you through each module of this levelup.
 
-To download the notebook, please run the following commands from a Powershell or Windows Terminal window to [install VScode](https://code.visualstudio.com/download) if not already installed, [install Dot Net SDK 7](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) and install the [notebook extension to VSCode](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.dotnet-interactive-vscode):
+To download the notebook, please run the following commands from a Powershell or Windows Terminal window to [install VScode](https://code.visualstudio.com/download) if not already installed, [install Dot Net SDK 7](https://dotnet.microsoft.com/en-us/download/dotnet/7.0), install the [notebook extension to VSCode](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.dotnet-interactive-vscode) and the PowerSehll [extension](https://code.visualstudio.com/docs/languages/powershell):
 
 ```shell
 winget install -e --id Microsoft.VisualStudioCode --no-upgrade
 winget install -e --id Microsoft.DotNet.SDK.7 --no-upgrade
 code --install-extension ms-dotnettools.dotnet-interactive-vscode
+code --install-extension ms-vscode.powershell
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/microsoft/azure_arc/arc_servers_levelup/docs/azure_arc_jumpstart/azure_arc_servers/levelup/AzureArcLevelupNotebook.dib" -OutFile ./AzureArcLevelupNotebook.dib
 code ./AzureArcLevelupNotebook.dib
 ```
@@ -90,6 +91,12 @@ ties in a sandbox environment. Screenshot below shows layout of the lab environm
 
 ```shell
 az login
+```
+
+- [Install or update Azure PowerShell](https://learn.microsoft.com/powershell/azure/install-azps-windows?view=azps-10.3.0&tabs=windowspowershell&pivots=windows-psgallery). Use the below command to check if its installed.
+
+```shell
+Get-module -Name Az.Accounts -listavailable
 ```
 
 - Login to Azure PowerShell the ```Connect-AzAccount``` command.
