@@ -758,7 +758,7 @@ In this module you will configure Windows security events collection using Senti
 
     ![Screenshot selecting the Identity and access workbook](./sentinel_failed_login.png)
 
-### Module 5: Keep your Azure Arc-enabled servers patched using Azure Manager
+### Module 5: Keep your Azure Arc-enabled servers patched using Azure Update Manager
 
 #### Module overview
 
