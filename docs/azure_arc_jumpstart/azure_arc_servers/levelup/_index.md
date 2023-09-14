@@ -53,11 +53,11 @@ To download the notebook, please run the following commands from a Powershell or
 winget install -e --id Microsoft.VisualStudioCode --no-upgrade
 winget install -e --id Microsoft.DotNet.SDK.7 --no-upgrade
 code --install-extension ms-dotnettools.dotnet-interactive-vscode
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/microsoft/azure_arc/arc_servers_level_up/docs/azure_arc_jumpstart/azure_arc_servers/levelup/AzureArcLevelupNotebook.dib" -OutFile ./AzureArcLevelupNotebook.dib
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/microsoft/azure_arc/arc_servers_levelup/docs/azure_arc_jumpstart/azure_arc_servers/levelup/AzureArcLevelupNotebook.dib" -OutFile ./AzureArcLevelupNotebook.dib
 code ./AzureArcLevelupNotebook.dib
 ```
 
->**NOTE: The notebook can be also downloaded from [here](https://github.com/microsoft/azure_arc/blob/arc_servers_level_up/docs/azure_arc_jumpstart/azure_arc_servers/levelup/AzureArcLevelupNotebook.dib) manually**
+>**NOTE: The notebook can be also downloaded from [here](https://github.com/microsoft/azure_arc/blob/arc_servers_levelup/docs/azure_arc_jumpstart/azure_arc_servers/levelup/AzureArcLevelupNotebook.dib) manually**
 
 - VSCode will open in restricted mode. To trust this file, click "Manage".
 
@@ -218,7 +218,7 @@ Set-AzContext -SubscriptionId $subscriptionId
 
 #### Deployment Option 1: Azure portal
 
-- Click the <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fazure_arc%2Farc_servers_level_up%2Fazure_jumpstart_arcbox_servers_levelup%2FARM%2Fazuredeploy.json" target="_blank"><img src="https://aka.ms/deploytoazurebutton"/></a> button and enter values for the the ARM template parameters.
+- Click the <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fazure_arc%2Farc_servers_levelup%2Fazure_jumpstart_arcbox_servers_levelup%2FARM%2Fazuredeploy.json" target="_blank"><img src="https://aka.ms/deploytoazurebutton"/></a> button and enter values for the the ARM template parameters.
 
   ![Screenshot showing Azure portal deployment of ArcBox](./portaldeploy.png)
 
@@ -238,7 +238,7 @@ Set-AzContext -SubscriptionId $subscriptionId
   $folderPath = <Specify a folder path to clone the repo>
 
   Set-Location -Path $folderPath
-  git clone -b arc_servers_level_up https://github.com/microsoft/azure_arc.git
+  git clone -b arc_servers_levelup https://github.com/microsoft/azure_arc.git
   Set-Location -Path "azure_arc\azure_jumpstart_arcbox_servers_levelup\bicep"
   ```
 
@@ -248,7 +248,7 @@ Set-AzContext -SubscriptionId $subscriptionId
   az bicep upgrade
   ```
 
-- Edit the [main.parameters.json](https://github.com/microsoft/azure_arc/blob/arc_servers_level_up/azure_jumpstart_arcbox_servers_levelup/bicep/main.parameters.json) template parameters file and supply some values for your environment.
+- Edit the [main.parameters.json](https://github.com/microsoft/azure_arc/blob/arc_servers_levelup/azure_jumpstart_arcbox_servers_levelup/bicep/main.parameters.json) template parameters file and supply some values for your environment.
   - _`spnClientId`_ - Your Azure service principal id
   - _`spnClientSecret`_ - Your Azure service principal secret
   - _`spnTenantId`_ - Your Azure tenant id
