@@ -89,35 +89,35 @@ ties in a sandbox environment. Screenshot below shows layout of the lab environm
 
 - Login to AZ CLI using the ```az login``` command.
 
-```shell
-az login
-```
+  ```shell
+  az login
+  ```
 
 - [Install or update Azure PowerShell](https://learn.microsoft.com/powershell/azure/install-azps-windows?view=azps-10.3.0&tabs=windowspowershell&pivots=windows-psgallery). Use the below command to check if its installed.
 
-```shell
-Get-module -Name Az.Accounts -listavailable
-```
+  ```shell
+  Get-module -Name Az.Accounts -listavailable
+  ```
 
 - Login to Azure PowerShell the ```Connect-AzAccount``` command.
 
-```shell
-Connect-AzAccount
-```
+  ```shell
+  Connect-AzAccount
+  ```
 
 - Set the default subscription using Azure CLI.
 
-```shell
-$subscriptionId = "<Subscription Id>"
-az account set -s $subscriptionId
-```
+  ```shell
+  $subscriptionId = "<Subscription Id>"
+  az account set -s $subscriptionId
+  ```
 
 - Set the default subscription using Azure PowerShell.
 
-```shell
-$subscriptionId = "<Subscription Id>"
-Set-AzContext -SubscriptionId $subscriptionId
-```
+  ```shell
+  $subscriptionId = "<Subscription Id>"
+  Set-AzContext -SubscriptionId $subscriptionId
+  ```
 
 - Ensure that you have selected the correct subscription you want to deploy ArcBox to by using the ```az account list --query "[?isDefault]"``` command. If you need to adjust the active subscription used by Az CLI, follow [this guidance](https://docs.microsoft.com/cli/azure/manage-azure-subscriptions-azure-cli#change-the-active-subscription).
 
@@ -362,10 +362,10 @@ If you already have [Microsoft Defender for Cloud](https://docs.microsoft.com/az
 
 - Using the following Powershell commands (run the notebook cell to execute directly on your local machine) create a service principal and assign it the Azure Connected Machine Onboarding role for the selected subscription. After the service principal is created, it will print the application ID and secret (copy these somewhere safe for later use). Note :
 
-```powershell
-$sp = New-AzADServicePrincipal -DisplayName "Arc server onboarding account" -Role "Azure Connected Machine Onboarding"
-$sp | Format-Table AppId, @{ Name = "Secret"; Expression = { $_.PasswordCredentials.SecretText }}
-```
+  ```powershell
+  $sp = New-AzADServicePrincipal -DisplayName "Arc server onboarding account" -Role "Azure Connected Machine Onboarding"
+  $sp | Format-Table AppId, @{ Name = "Secret"; Expression = { $_.PasswordCredentials.SecretText }}
+  ```
 
 - Next we will generate a script to automate the download and installation, and to connect to Azure Arc.
 
@@ -401,11 +401,11 @@ $sp | Format-Table AppId, @{ Name = "Secret"; Expression = { $_.PasswordCredenti
 
 - Add the client secret to the script using your editor. **Also add** the following 3 firewall commands just below the last export statement (to allow onboarding of Azure linux machines):
 
-```shell
-sudo ufw --force enable
-sudo ufw deny out from any to 169.254.169.254
-sudo ufw default allow incoming
-```
+  ```shell
+  sudo ufw --force enable
+  sudo ufw deny out from any to 169.254.169.254
+  sudo ufw default allow incoming
+  ```
 
 - Connect the the ArcBox-Client machine, and from the "Networking" tab on Hyper-v Manager find the IP address of the Linux machine.
 
@@ -419,15 +419,15 @@ sudo ufw default allow incoming
 
 - create an empty onboarding script file using the nano editor, and paste the script content from your local machine (you can paste by right-clicking inside the nano editor window).
 
-```shell
-nano onboardingscript.sh
-```
+  ```shell
+  nano onboardingscript.sh
+  ```
 
 - Save the file (Ctrl-O then Enter) and exit (Ctrl-X). Now you can run the script:
 
-```shell
-sudo bash ./onboardingscript.sh
-```
+  ```shell
+  sudo bash ./onboardingscript.sh
+  ```
 
 - Wait for the script to finish successfully. A message should confirm that the machine is now Arc-connected. We can also verify that our Windows machine is connected in the Azure portal (Machines - Azure Arc). **If the script returns an error then check that you have added the three firewall (ufw) commands mentioned above.**
 
@@ -469,13 +469,13 @@ Azure Policy lets you set and enforce requirements for all new resources you cre
 
 - To get the "Data Collection Rule" resource Id,  run the following CLI command
 
-```shell
-az resource show --name "arcbox-ama-vmi-perfAndda-dcr" `
-                 --resource-group "<resource group name>" `
-                 --resource-type Microsoft.Insights/dataCollectionRules `
-                 --query id `
-                 --output tsv
-```
+  ```shell
+  az resource show --name "arcbox-ama-vmi-perfAndda-dcr" `
+                   --resource-group "<resource group name>" `
+                   --resource-type Microsoft.Insights/dataCollectionRules `
+                   --query id `
+                   --output tsv
+  ```
 
 - You can also find the "Data Collection Rule" resource Id from the Azure portal. Search for the _arcbox-ama-vmi-perfAndda-dcr_ data collection rule.
 
@@ -637,18 +637,18 @@ In this module, you will learn how to enable and leverage Microsoft Defender for
 
 - Run the following command:
 
-```shell
-$remoteScriptFile = "$agentScript\testDefenderForServers.ps1"
-$Win2k22vmName = "ArcBox-Win2K22"
-$nestedWindowsUsername = "Administrator"
-$nestedWindowsPassword = "ArcDemo123!!"
-$secWindowsPassword = ConvertTo-SecureString $nestedWindowsPassword -AsPlainText -Force
-$winCreds = New-Object System.Management.Automation.PSCredential ($nestedWindowsUsername, $secWindowsPassword)
-$cmdExePath = "C:\Windows\System32\cmd.exe"
-$cmdArguments = "/C `"$remoteScriptFile`""
+  ```shell
+  $remoteScriptFile = "$agentScript\testDefenderForServers.ps1"
+  $Win2k22vmName = "ArcBox-Win2K22"
+  $nestedWindowsUsername = "Administrator"
+  $nestedWindowsPassword = "ArcDemo123!!"
+  $secWindowsPassword = ConvertTo-SecureString $nestedWindowsPassword -AsPlainText -Force
+  $winCreds = New-Object System.Management.Automation.PSCredential ($nestedWindowsUsername, $secWindowsPassword)
+  $cmdExePath = "C:\Windows\System32\cmd.exe"
+  $cmdArguments = "/C `"$remoteScriptFile`""
 
-Invoke-Command -VMName $Win2k22vmName -ScriptBlock { Start-Process -FilePath $Using:cmdExePath -ArgumentList $Using:cmdArguments } -Credential $winCreds
-```
+  Invoke-Command -VMName $Win2k22vmName -ScriptBlock { Start-Process -FilePath $Using:cmdExePath -ArgumentList $Using:cmdArguments } -Credential $winCreds
+  ```
 
   ![Screenshot showing running the Defender alert trigger script in ISE](./run_defender_alert_trigger.png)
 
@@ -877,6 +877,7 @@ Ensure that you have the correct region mappings for Azure Automation account an
 #### Task 1: Enabling Change Tracking and Inventory
 
 > **NOTE: This task usually requires the following:
+
 >1. Creation of an Automation Account.
 >2. Linking the Automation Account to Log Analytics.
 >3. Enabling Change Tracking on the Automation Account.
@@ -895,10 +896,10 @@ Verify that Change Tracking and Inventory is now enabled and the Arc VMs are rep
 
 - Try stopping and starting services on the Arc machine ArcBox-Win2k19 using an administrative powershell session.
 
-```PowerShell
-Stop-Service spooler
-Start-service spooler
-```
+  ```PowerShell
+  Stop-Service spooler
+  Start-service spooler
+  ```
 
 - The service changes will eventually show up in the portal
 (By default Windows services status are updated every 30 minutes)
@@ -923,9 +924,9 @@ Start-service spooler
 
 - Add a line like this from an administrative notepad and save the file.
 
-```shell
-1.1.1.1      www.fakehost.com
-```
+  ```shell
+  1.1.1.1      www.fakehost.com
+  ```
 
 - Eventually, the file changes will show up in the portal.
 
@@ -961,18 +962,18 @@ It is possible to leverage both Azure CLI and Azure PowerShell to connect to Arc
 
 #### Azure CLI
 
-```cmd
-az extension add --name ssh
-```
+  ```cmd
+  az extension add --name ssh
+  ```
 
 or
 
 #### Azure PowerShell
 
-```powershell
-Install-Module -Name Az.Ssh -Scope CurrentUser -Repository PSGallery
-Install-Module -Name Az.Ssh.ArcProxy -Scope CurrentUser -Repository PSGallery
-```
+  ```powershell
+  Install-Module -Name Az.Ssh -Scope CurrentUser -Repository PSGallery
+  Install-Module -Name Az.Ssh.ArcProxy -Scope CurrentUser -Repository PSGallery
+  ```
 
   > NOTE: We recommend that you install the tools on the ArcBox Client virtual machine, but you may also choose to use your local machine if you want to verify that the Arc-enabled servers is reachable from any internet-connected machine after performing the tasks in this module.
 
@@ -991,24 +992,24 @@ Perform the following steps in order to enable and verify SSH configuration on b
 - Login to the operating system using username Administrator and the password you used when deploying ArcBox, by default this is **ArcPassword123!!**
 - Open Windows PowerShell and install OpenSSH for Windows by running the following:
 
-```powershell
-# Install the OpenSSH Server
-Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0`
+  ```powershell
+  # Install the OpenSSH Server
+  Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0`
 
-# Start the sshd service
-Start-Service sshd
+  # Start the sshd service
+  Start-Service sshd
 
-# Configure the service to start automatically
-Set-Service -Name sshd -StartupType 'Automatic'
+  # Configure the service to start automatically
+  Set-Service -Name sshd -StartupType 'Automatic'
 
-# Confirm the Windows Firewall is configured to allow SSH. The rule should be created automatically by setup. Run the following to verify:
-if (!(Get-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue | Select-Object Name, Enabled)) {
-    Write-Output "Firewall Rule "OpenSSH-Server-In-TCP" does not exist, creating it..."
-    New-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -DisplayName "OpenSSH Server (sshd)" -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
-} else {
-    Write-Output "Firewall rule 'OpenSSH-Server-In-TCP' has been created and exists."
-}
-```
+  # Confirm the Windows Firewall is configured to allow SSH. The rule should be created automatically by setup. Run the following to verify:
+  if (!(Get-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue | Select-Object Name, Enabled)) {
+      Write-Output "Firewall Rule "OpenSSH-Server-In-TCP" does not exist, creating it..."
+      New-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -DisplayName "OpenSSH Server (sshd)" -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+  } else {
+      Write-Output "Firewall rule 'OpenSSH-Server-In-TCP' has been created and exists."
+  }
+  ```
 
 - Close the connection to _ArcBox-Win2K22_
 - Right click _ArcBox-Ubuntu-01_ in Hyper-V Manager and select Connect
@@ -1022,24 +1023,24 @@ From the _ArcBox-Client_ VM, open a PowerShell session and use the below command
 
 #### Azure CLI
 
-```powershell
-$serverName = "ArcBox-Ubuntu-01"
-$localUser = "arcdemo"
+  ```powershell
+  $serverName = "ArcBox-Ubuntu-01"
+  $localUser = "arcdemo"
 
-az ssh arc --resource-group $Env:resourceGroup --name $serverName --local-user $localUser
-```
+  az ssh arc --resource-group $Env:resourceGroup --name $serverName --local-user $localUser
+  ```
 
 or
 
 #### Azure PowerShell
 
-```powershell
+  ```powershell
 
-$serverName = "ArcBox-Ubuntu-01"
-$localUser = "arcdemo"
+  $serverName = "ArcBox-Ubuntu-01"
+  $localUser = "arcdemo"
 
-Enter-AzVM -ResourceGroupName $Env:resourceGroup -Name $serverName -LocalUser $localUser
-```
+  Enter-AzVM -ResourceGroupName $Env:resourceGroup -Name $serverName -LocalUser $localUser
+  ```
 
 The first time you connect to an Arc-enabled server using SSH, you will retrieve the following question:
 > Port 22 is not allowed for SSH connections in this resource. Would you like to update the current Service Configuration in the endpoint to allow connections to port 22? If you would like to update the Service Configuration to allow connections to a different port, please provide the -Port parameter or manually set up the Service Configuration. (y/n)
@@ -1056,23 +1057,22 @@ Following the previous method, connect to _ArcBox-Win2K22_ via SSH.
 
 #### Azure CLI
 
-```powershell
-$serverName = "ArcBox-Win2K22"
-$localUser = "Administrator"
+  ```powershell
+  $serverName = "ArcBox-Win2K22"
+  $localUser = "Administrator"
 
-az ssh arc --resource-group $Env:resourceGroup --name $serverName --local-user $localUser
-```
+  az ssh arc --resource-group $Env:resourceGroup --name $serverName --local-user $localUser
+  ```
 
 or
 #### Azure PowerShell
 
-```powershell
+  ```powershell
+  $serverName = "ArcBox-Win2K22"
+  $localUser = "Administrator"
 
-$serverName = "ArcBox-Win2K22"
-$localUser = "Administrator"
-
-Enter-AzVM -ResourceGroupName $Env:resourceGroup -Name $serverName -LocalUser $localUser
-```
+  Enter-AzVM -ResourceGroupName $Env:resourceGroup -Name $serverName -LocalUser $localUser
+  ```
 
    ![Screenshot showing usage of SSH via Azure CLI](./ssh_via_az_cli_03.png)
 
@@ -1092,13 +1092,12 @@ In addition to SSH, you can also connect to the Azure Arc-enabled servers, Windo
 or
 #### Azure PowerShell
 
-```powershell
+  ```powershell
+  $serverName = "ArcBox-Win2K22"
+  $localUser = "Administrator"
 
-$serverName = "ArcBox-Win2K22"
-$localUser = "Administrator"
-
-Enter-AzVM -ResourceGroupName $Env:resourceGroup -Name $serverName -LocalUser $localUser -Rdp
-```
+  Enter-AzVM -ResourceGroupName $Env:resourceGroup -Name $serverName -LocalUser $localUser -Rdp
+  ```
 
    ![Screenshot showing usage of Remote Desktop tunnelled via SSH](./rdp_via_az_cli.png)
 
@@ -1106,11 +1105,11 @@ Enter-AzVM -ResourceGroupName $Env:resourceGroup -Name $serverName -LocalUser $l
 
 The `Azure AD based SSH Login – Azure Arc` VM extension can be added from the extensions menu of the Arc server in the Azure portal. The Azure AD login extension can also be installed locally via a package manager via: `apt-get install aadsshlogin` or the following command:
 
-```PowerShell
-$serverName = "ArcBox-Ubuntu-01"
+  ```PowerShell
+  $serverName = "ArcBox-Ubuntu-01"
 
-az connectedmachine extension create --machine-name $serverName --resource-group $Env:resourceGroup --publisher Microsoft.Azure.ActiveDirectory --name AADSSHLogin --type AADSSHLoginForLinux --location $env:azureLocation
-```
+  az connectedmachine extension create --machine-name $serverName --resource-group $Env:resourceGroup --publisher Microsoft.Azure.ActiveDirectory --name AADSSHLogin --type AADSSHLoginForLinux --location $env:azureLocation
+  ```
 
 - Configure role assignments for the Arc-enabled server _ArcBox-Ubuntu-01_ using the Azure portal.  Two Azure roles are used to authorize VM login:
    - **Virtual Machine Administrator Login**: Users who have this role assigned can log in to an Azure virtual machine with administrator privileges.
@@ -1120,35 +1119,32 @@ After assigning one of the two roles for your personal Azure AD/Entra ID user ac
 
 #### Azure CLI
 
-```powershell
-# Log out from the Service Principcal context
-az logout
+  ```powershell
+  # Log out from the Service Principcal context
+  az logout
+  # Log in using your personal account
+  az login
 
-# Log in using your personal account
-az login
+  $serverName = "ArcBox-Ubuntu-01"
+  $localUser = "arcdemo"
 
-$serverName = "ArcBox-Ubuntu-01"
-$localUser = "arcdemo"
-
-az ssh arc --resource-group $Env:resourceGroup --name $serverName
-```
+  az ssh arc --resource-group $Env:resourceGroup --name $serverName
+  ```
 
 or
 
 #### Azure PowerShell
 
-```powershell
-# Log out from the Service Principal context
-Disconnect-AzAccount
+  ```powershell
+  # Log out from the Service Principal context
+  Disconnect-AzAccount
+  # Log in using your personal account
+  Connect-AzAccount
+  $serverName = "ArcBox-Ubuntu-01"
+  $localUser = "Administrator"
 
-# Log in using your personal account
-Connect-AzAccount
-
-$serverName = "ArcBox-Ubuntu-01"
-$localUser = "Administrator"
-
-Enter-AzVM -ResourceGroupName $Env:resourceGroup -Name $serverName
-```
+  Enter-AzVM -ResourceGroupName $Env:resourceGroup -Name $serverName
+  ```
 
 You should now be connected and authenticated using your Azure AD/Entra ID account.
 
@@ -1204,18 +1200,17 @@ In this module we will onboard two Azure Arc-enabled servers as Hybrid runbook w
 - Customize the parameter values to reflect your environment for the subscription name, resource name and location
 - Paste the code in the PowerShell window and press Enter
 
-```powershell
-# Define parameters in a hashtable
-$AutomationAccountParams = @{
-    ResourceGroupName = "jan-arcbox-01-rg"
-    Name = "ArcBox-Automation"
-    Location = "East US"
-    AssignSystemIdentity = $true
-}
-
-# Create the Automation account using splatting
-New-AzAutomationAccount @AutomationAccountParams
-```
+  ```powershell
+  # Define parameters in a hashtable
+  $AutomationAccountParams = @{
+      ResourceGroupName = "jan-arcbox-01-rg"
+      Name = "ArcBox-Automation"
+      Location = "East US"
+      AssignSystemIdentity = $true
+  }
+  # Create the Automation account using splatting
+  New-AzAutomationAccount @AutomationAccountParams
+  ```
 
 The output should look similar to this:
 
@@ -1275,73 +1270,67 @@ The output should look similar to this:
 
 ##### Option 2: Azure PowerShell
 
-```powershell
+  ```powershell
 
-# Retrieve service URL for Automation account (used when registering Arc-enabled Servers as Hybrid Runbook Workers)
-$AutomationAccountParams = @{
-    ResourceGroupName = "arcbox-demo-rg"
-    Name = "ArcBox-Automation"
-}
-
-$AutomationAccount = Get-AzResource @AutomationAccountParams
-
-$AutomationAccountInfo = Invoke-AzRestMethod -SubscriptionId $AutomationAccount.SubscriptionId -ResourceGroupName $AutomationAccount.ResourceGroupName -ResourceProviderName Microsoft.Automation -ResourceType automationAccounts -Name $AutomationAccount.Name -ApiVersion 2021-06-22 -Method GET
-$AutomationHybridServiceUrl = ($AutomationAccountInfo.Content | ConvertFrom-Json).Properties.automationHybridServiceUrl
-
-$HybridWorkerGroupParams = @{
-    ResourceGroupName = "arcbox-demo-rg"
-    AutomationAccountName = "ArcBox-Automation"
-    Name = "linux-workers"
-}
-
-# Create the Linux Hybrid Worker Group
-New-AzAutomationHybridRunbookWorkerGroup @HybridWorkerGroupParams
-
-# Define parameters in a hashtable
-$HybridWorkerParams = @{
-    ResourceGroupName = "arcbox-demo-rg"
-    AutomationAccountName = "ArcBox-Automation"
-    HybridRunbookWorkerGroupName = "linux-workers"
-    Name = "ArcBox-Ubuntu01"
-}
-
-# Add the Hybrid Worker to the group
-New-AzAutomationHybridRunbookWorker @HybridWorkerParams
-
-$ArcResource = Get-AzConnectedMachine -ResourceGroupName $HybridWorkerParams.ResourceGroupName -Name
-
-New-AzConnectedMachineExtension -ResourceGroupName $ArcResource.ResourceGroupName -Location $ArcResource.Location -MachineName $ArcResource.Name -Name "HybridWorkerExtension" -Publisher "Microsoft.Azure.Automation.HybridWorker" -ExtensionType HybridWorkerForLinux -TypeHandlerVersion 1.1 -Setting $settings -EnableAutomaticUpgrade
-
-
-$HybridWorkerGroupParams = @{
-    ResourceGroupName = "arcbox-demo-rg"
-    AutomationAccountName = "ArcBox-Automation"
-    Name = "windows-workers"
-}
-
-# Create the Windows Hybrid Worker Group using splatting
-New-AzAutomationHybridRunbookWorkerGroup @HybridWorkerGroupParams
-
-# Define parameters in a hashtable
-$HybridWorkerParams = @{
-    ResourceGroupName = "arcbox-demo-rg"
-    AutomationAccountName = "ArcBox-Automation"
-    HybridRunbookWorkerGroupName = "windows-workers"
-    Name = "ArcBox-Win2K22"
-}
-
-# Add the Hybrid Worker to the group
-New-AzAutomationHybridRunbookWorker @HybridWorkerParams
-
-$settings = @{
-      "AutomationAccountURL"  = $AutomationHybridServiceUrl
+  # Retrieve service URL for Automation account (used when registering Arc-enabled Servers as Hybrid Runbook Workers)
+  $AutomationAccountParams = @{
+      ResourceGroupName = "arcbox-demo-rg"
+      Name = "ArcBox-Automation"
   }
+  $AutomationAccount = Get-AzResource @AutomationAccountParams
 
-$ArcResource = Get-AzConnectedMachine -ResourceGroupName $HybridWorkerParams.ResourceGroupName -Name
+  $AutomationAccountInfo = Invoke-AzRestMethod -SubscriptionId $AutomationAccount.SubscriptionId -ResourceGroupName $AutomationAccount.ResourceGroupName -ResourceProviderName Microsoft.Automation -ResourceType automationAccounts -Name $AutomationAccount.Name -ApiVersion 2021-06-22 -Method GET
+  $AutomationHybridServiceUrl = ($AutomationAccountInfo.Content | ConvertFrom-Json).Properties.automationHybridServiceUrl
 
-New-AzConnectedMachineExtension -ResourceGroupName $ArcResource.ResourceGroupName -Location $ArcResource.Location -MachineName $ArcResource.Name -Name "HybridWorkerExtension" -Publisher "Microsoft.Azure.Automation.HybridWorker" -ExtensionType HybridWorkerForWindows -TypeHandlerVersion 1.1 -Setting $settings -EnableAutomaticUpgrade
+  $HybridWorkerGroupParams = @{
+      ResourceGroupName = "arcbox-demo-rg"
+      AutomationAccountName = "ArcBox-Automation"
+      Name = "linux-workers"
+  }
+  # Create the Linux Hybrid Worker Group
+  New-AzAutomationHybridRunbookWorkerGroup @HybridWorkerGroupParams
 
-```
+  # Define parameters in a hashtable
+  $HybridWorkerParams = @{
+      ResourceGroupName = "arcbox-demo-rg"
+      AutomationAccountName = "ArcBox-Automation"
+      HybridRunbookWorkerGroupName = "linux-workers"
+      Name = "ArcBox-Ubuntu01"
+  }
+  # Add the Hybrid Worker to the group
+  New-AzAutomationHybridRunbookWorker @HybridWorkerParams
+
+  $ArcResource = Get-AzConnectedMachine -ResourceGroupName $HybridWorkerParams.ResourceGroupName -Name
+
+  New-AzConnectedMachineExtension -ResourceGroupName $ArcResource.ResourceGroupName -Location $ArcResource.Location -MachineName $ArcResource.Name -Name "HybridWorkerExtension" -Publisher "Microsoft.Azure.Automation.HybridWorker" -ExtensionType HybridWorkerForLinux -TypeHandlerVersion 1.1 -Setting $settings -EnableAutomaticUpgrade
+
+  $HybridWorkerGroupParams = @{
+      ResourceGroupName = "arcbox-demo-rg"
+      AutomationAccountName = "ArcBox-Automation"
+      Name = "windows-workers"
+  }
+  # Create the Windows Hybrid Worker Group using splatting
+  New-AzAutomationHybridRunbookWorkerGroup @HybridWorkerGroupParams
+
+  # Define parameters in a hashtable
+  $HybridWorkerParams = @{
+      ResourceGroupName = "arcbox-demo-rg"
+      AutomationAccountName = "ArcBox-Automation"
+      HybridRunbookWorkerGroupName = "windows-workers"
+      Name = "ArcBox-Win2K22"
+  }
+  # Add the Hybrid Worker to the group
+  New-AzAutomationHybridRunbookWorker @HybridWorkerParams
+
+  $settings = @{
+        "AutomationAccountURL"  = $AutomationHybridServiceUrl
+    }
+
+  $ArcResource = Get-AzConnectedMachine -ResourceGroupName $HybridWorkerParams.ResourceGroupName -Name
+
+  New-AzConnectedMachineExtension -ResourceGroupName $ArcResource.ResourceGroupName -Location $ArcResource.Location -MachineName $ArcResource.Name -Name "HybridWorkerExtension" -Publisher "Microsoft.Azure.Automation.HybridWorker" -ExtensionType HybridWorkerForWindows -TypeHandlerVersion 1.1 -Setting $settings -EnableAutomaticUpgrade
+
+  ```
 
 #### Task 3 - Create and start a runbook
 
@@ -1369,54 +1358,48 @@ New-AzConnectedMachineExtension -ResourceGroupName $ArcResource.ResourceGroupNam
 
 - Paste the following script into the editor pane:
 
-```powershell
-if ($IsWindows) {
+  ```powershell
+  if ($IsWindows) {
 
-    Write-Output 'Free disk space before cleanup action'
+      Write-Output 'Free disk space before cleanup action'
 
-    Get-Volume -DriveLetter C | Out-String
+      Get-Volume -DriveLetter C | Out-String
 
-    Write-Output "Windows Update component store cleanup"
-    Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
+      Write-Output "Windows Update component store cleanup"
+      Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
 
-    $SystemTemp = "$env:SystemRoot\Temp"
-    Write-Output "Empty the system temporary folder: $SystemTemp"
-    Get-ChildItem -Path $SystemTemp -Recurse | Remove-Item -Force -Recurse
+      $SystemTemp = "$env:SystemRoot\Temp"
+      Write-Output "Empty the system temporary folder: $SystemTemp"
+      Get-ChildItem -Path $SystemTemp -Recurse | Remove-Item -Force -Recurse
 
-    Write-Output 'Free disk space after cleanup action'
+      Write-Output 'Free disk space after cleanup action'
 
-    Get-Volume -DriveLetter C | Out-String
+      Get-Volume -DriveLetter C | Out-String
 
-} elseif ($IsLinux) {
+  } elseif ($IsLinux) {
 
-    Write-Output 'Free disk space before cleanup action'
-    df -h -m
+      Write-Output 'Free disk space before cleanup action'
+      df -h -m
+      # Specify the directory where your log files are located
+      $logDir = '/var/log'
+      # Define the number of days to retain log files
+      $daysToKeep = 7
+      # Get the current date
+      $currentDate = Get-Date
+      # Calculate the date threshold for log file deletion
+      $thresholdDate = $currentDate.AddDays(-$daysToKeep)
+      # List log files in the specified directory that are older than the threshold
+      $filesToDelete = Get-ChildItem -Path $logDir -File | Where-Object { $_.LastWriteTime -lt $thresholdDate }
 
-    # Specify the directory where your log files are located
-    $logDir = '/var/log'
+      # Delete the old log files
+      foreach ($file in $filesToDelete) {
+          Remove-Item -Path $file.FullName -Force
+      }
+      Write-Output 'Free disk space after cleanup action'
+      df -h -m
 
-    # Define the number of days to retain log files
-    $daysToKeep = 7
-
-    # Get the current date
-    $currentDate = Get-Date
-
-    # Calculate the date threshold for log file deletion
-    $thresholdDate = $currentDate.AddDays(-$daysToKeep)
-
-    # List log files in the specified directory that are older than the threshold
-    $filesToDelete = Get-ChildItem -Path $logDir -File | Where-Object { $_.LastWriteTime -lt $thresholdDate }
-
-    # Delete the old log files
-    foreach ($file in $filesToDelete) {
-        Remove-Item -Path $file.FullName -Force
-    }
-
-    Write-Output 'Free disk space after cleanup action'
-    df -h -m
-
-}
-```
+  }
+  ```
 
 - Click Save
 
@@ -1484,31 +1467,31 @@ We will be using the ArcBox Client virtual machine for the configuration authori
 
 - Initialize variables.
 
-```PowerShell
-$resourceGroupName = $env:resourceGroup
-$location = $env:azureLocation
-$spnClientId = $env:spnClientID
-$spnClientSecret = $env:spnClientSecret
-$spnTenantId = $env:spnTenantId
-$Win2k19vmName = "ArcBox-Win2K19"
-$Win2k22vmName = "ArcBox-Win2K22"
+  ```PowerShell
+  $resourceGroupName = $env:resourceGroup
+  $location = $env:azureLocation
+  $spnClientId = $env:spnClientID
+  $spnClientSecret = $env:spnClientSecret
+  $spnTenantId = $env:spnTenantId
+  $Win2k19vmName = "ArcBox-Win2K19"
+  $Win2k22vmName = "ArcBox-Win2K22"
 
-$SecurePassword = ConvertTo-SecureString -String $spnClientSecret -AsPlainText -Force
-$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $spnClientId, $SecurePassword
-Connect-AzAccount -ServicePrincipal -TenantId $spnTenantId -Credential $Credential
-```
+  $SecurePassword = ConvertTo-SecureString -String $spnClientSecret -AsPlainText -Force
+  $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $spnClientId, $SecurePassword
+  Connect-AzAccount -ServicePrincipal -TenantId $spnTenantId -Credential $Credential
+  ```
 
 - Install the needed PowerShell modules.
 
-```PowerShell
-Install-Module -Name Az.Accounts -Force -RequiredVersion 2.12.1
-Install-Module -Name Az.PolicyInsights -Force -RequiredVersion 1.5.1
-Install-Module -Name Az.Resources -Force -RequiredVersion 6.5.2
-Install-Module -Name Az.Storage -Force -RequiredVersion 5.4.0
-Install-Module -Name GuestConfiguration -Force -RequiredVersion 4.4.0
-Install-Module -Name PSDesiredStateConfiguration -Force -RequiredVersion 2.0.5
-Install-Module -Name PSDscResources -Force -RequiredVersion 2.12.0.0
-```
+  ```PowerShell
+  Install-Module -Name Az.Accounts -Force -RequiredVersion 2.12.1
+  Install-Module -Name Az.PolicyInsights -Force -RequiredVersion 1.5.1
+  Install-Module -Name Az.Resources -Force -RequiredVersion 6.5.2
+  Install-Module -Name Az.Storage -Force -RequiredVersion 5.4.0
+  Install-Module -Name GuestConfiguration -Force -RequiredVersion 4.4.0
+  Install-Module -Name PSDesiredStateConfiguration -Force -RequiredVersion 2.0.5
+  Install-Module -Name PSDscResources -Force -RequiredVersion 2.12.0.0
+  ```
 
 - Run _Get-InstalledModule_ to validate that the modules have installed successfully.
 
@@ -1533,155 +1516,153 @@ Due to using MOF-based DSC resources for the Windows demo-configuration, we are 
 
 - Create a storage account to store the machine configurations
 
-```PowerShell
-$storageaccountsuffix = -join ((97..122) | Get-Random -Count 5 | % {[char]$_})
-New-AzStorageAccount -ResourceGroupName $resourceGroupName -Name "machineconfigstg$storageaccountsuffix" -SkuName 'Standard_LRS' -Location $Location -OutVariable storageaccount | New-AzStorageContainer -Name machineconfiguration -Permission Blob
-```
+  ```PowerShell
+  $storageaccountsuffix = -join ((97..122) | Get-Random -Count 5 | % {[char]$_})
+  New-AzStorageAccount -ResourceGroupName $resourceGroupName -Name "machineconfigstg$storageaccountsuffix" -SkuName 'Standard_LRS' -Location $Location -OutVariable storageaccount | New-AzStorageContainer -Name machineconfiguration -Permission Blob
+  ```
 
 - Create the custom configuration
 
-```PowerShell
-Import-Module PSDesiredStateConfiguration -RequiredVersion 2.0.5
+  ```PowerShell
+  Import-Module PSDesiredStateConfiguration -RequiredVersion 2.0.5
 
-Configuration AzureArcLevelUp_Windows
-{
-    param (
-        [Parameter(Mandatory)]
-        [System.Management.Automation.PSCredential]
-        [System.Management.Automation.Credential()]
-        $PasswordCredential
-    )
+  Configuration AzureArcLevelUp_Windows
+  {
+      param (
+          [Parameter(Mandatory)]
+          [System.Management.Automation.PSCredential]
+          [System.Management.Automation.Credential()]
+          $PasswordCredential
+      )
 
-    Import-DscResource -ModuleName 'PSDscResources' -ModuleVersion 2.12.0.0
+      Import-DscResource -ModuleName 'PSDscResources' -ModuleVersion 2.12.0.0
 
-    Node localhost
-    {
-        MsiPackage PS7
-        {
-            ProductId = '{323AD147-6FC4-40CB-A810-2AADF26D868A}'
-            Path = 'https://github.com/PowerShell/PowerShell/releases/download/v7.3.2/PowerShell-7.3.2-win-x64.msi'
-            Ensure = 'Present'
-        }
-        User ArcBoxUser
-        {
-            UserName = 'arcboxuser1'
-            FullName = 'ArcBox User 1'
-            Password = $PasswordCredential
-            Ensure = 'Present'
-        }
-        WindowsFeature SMB1 {
-            Name = 'FS-SMB1'
-            Ensure = 'Absent'
-        }
-    }
-}
+      Node localhost
+      {
+          MsiPackage PS7
+          {
+              ProductId = '{323AD147-6FC4-40CB-A810-2AADF26D868A}'
+              Path = 'https://github.com/PowerShell/PowerShell/releases/download/v7.3.2/PowerShell-7.3.2-win-x64.msi'
+              Ensure = 'Present'
+          }
+          User ArcBoxUser
+          {
+              UserName = 'arcboxuser1'
+              FullName = 'ArcBox User 1'
+              Password = $PasswordCredential
+              Ensure = 'Present'
+          }
+          WindowsFeature SMB1 {
+              Name = 'FS-SMB1'
+              Ensure = 'Absent'
+          }
+      }
+  }
+  Write-Host "Creating credentials for arcbox user 1"
+  $nestedWindowsUsername = "arcboxuser1"
+  $nestedWindowsPassword = "ArcDemo123!!"  # In real-world scenarios this could be retrieved from an Azure Key Vault
 
-Write-Host "Creating credentials for arcbox user 1"
-$nestedWindowsUsername = "arcboxuser1"
-$nestedWindowsPassword = "ArcDemo123!!"  # In real-world scenarios this could be retrieved from an Azure Key Vault
+  # Create Windows credential object
+  $secWindowsPassword = ConvertTo-SecureString $nestedWindowsPassword -AsPlainText -Force
+  $winCreds = New-Object System.Management.Automation.PSCredential ($nestedWindowsUsername, $secWindowsPassword)
 
-# Create Windows credential object
-$secWindowsPassword = ConvertTo-SecureString $nestedWindowsPassword -AsPlainText -Force
-$winCreds = New-Object System.Management.Automation.PSCredential ($nestedWindowsUsername, $secWindowsPassword)
-
-$ConfigurationData = @{
-    AllNodes = @(
-        @{
-            NodeName = 'localhost'
-            PSDscAllowPlainTextPassword = $true
-        }
-    )
-}
-
-$OutputPath = "$HOME/arc_automanage_machine_configuration_custom_windows"
-New-Item $OutputPath -Force -ItemType Directory
-```
+  $ConfigurationData = @{
+      AllNodes = @(
+          @{
+              NodeName = 'localhost'
+              PSDscAllowPlainTextPassword = $true
+          }
+      )
+  }
+  $OutputPath = "$HOME/arc_automanage_machine_configuration_custom_windows"
+  New-Item $OutputPath -Force -ItemType Directory
+  ```
 
 - Execute the newly created configuration.
 
-```PowerShell
-AzureArcLevelUp_Windows -PasswordCredential $winCreds -ConfigurationData $ConfigurationData -OutputPath $OutputPath
-```
+  ```PowerShell
+  AzureArcLevelUp_Windows -PasswordCredential $winCreds -ConfigurationData $ConfigurationData -OutputPath $OutputPath
+  ```
 
 - Create a package that will audit and apply the configuration (Set)
 
-```PowerShell
-New-GuestConfigurationPackage `
--Name 'AzureArcLevelUp_Windows' `
--Configuration "$OutputPath/localhost.mof" `
--Type AuditAndSet `
--Path $OutputPath `
--Force
-```
+  ```PowerShell
+  New-GuestConfigurationPackage `
+  -Name 'AzureArcLevelUp_Windows' `
+  -Configuration "$OutputPath/localhost.mof" `
+  -Type AuditAndSet `
+  -Path $OutputPath `
+  -Force
+  ```
 
 - Test applying the configuration to the local machine
 
-```PowerShell
-Start-GuestConfigurationPackageRemediation -Path "$OutputPath/AzureArcLevelUp_Windows.zip"
-```
+  ```PowerShell
+  Start-GuestConfigurationPackageRemediation -Path "$OutputPath/AzureArcLevelUp_Windows.zip"
+  ```
 
 - Upload the configuration package to the Azure Storage Account.
 
-```PowerShell
-$StorageAccount = Get-AzStorageAccount -Name "machineconfigstg$storageaccountsuffix" -ResourceGroupName $ResourceGroupName
+  ```PowerShell
+  $StorageAccount = Get-AzStorageAccount -Name "machineconfigstg$storageaccountsuffix" -ResourceGroupName $ResourceGroupName
 
-$StorageAccountKey = Get-AzStorageAccountKey -Name $storageaccount.StorageAccountName -ResourceGroupName $storageaccount.ResourceGroupName
-$Context = New-AzStorageContext -StorageAccountName $storageaccount.StorageAccountName -StorageAccountKey $StorageAccountKey[0].Value
+  $StorageAccountKey = Get-AzStorageAccountKey -Name $storageaccount.StorageAccountName -ResourceGroupName $storageaccount.ResourceGroupName
+  $Context = New-AzStorageContext -StorageAccountName $storageaccount.StorageAccountName -StorageAccountKey $StorageAccountKey[0].Value
 
-Set-AzStorageBlobContent -Container "machineconfiguration" -File  "$OutputPath/AzureArcLevelUp_Windows.zip" -Blob "AzureArcLevelUp_Windows.zip" -Context $Context -Force
+  Set-AzStorageBlobContent -Container "machineconfiguration" -File  "$OutputPath/AzureArcLevelUp_Windows.zip" -Blob "AzureArcLevelUp_Windows.zip" -Context $Context -Force
 
-$contenturi = New-AzStorageBlobSASToken -Context $Context -FullUri -Container machineconfiguration -Blob "AzureArcLevelUp_Windows.zip" -Permission r
-```
+  $contenturi = New-AzStorageBlobSASToken -Context $Context -FullUri -Container machineconfiguration -Blob "AzureArcLevelUp_Windows.zip" -Permission r
+  ```
 
 - Create an Azure Policy definition.
 
-```PowerShell
-$PolicyId = (New-Guid).Guid
+  ```PowerShell
+  $PolicyId = (New-Guid).Guid
 
-New-GuestConfigurationPolicy `
-  -PolicyId $PolicyId `
-  -ContentUri $ContentUri `
-  -DisplayName '(AzureArcJumpstart) [Windows] Custom configuration' `
-  -Description 'Azure Arc Jumpstart Windows demo configuration' `
-  -Path  $OutputPath `
-  -Platform 'Windows' `
-  -PolicyVersion 1.0.0 `
-  -Mode ApplyAndAutoCorrect `
-  -Verbose -OutVariable Policy
+  New-GuestConfigurationPolicy `
+    -PolicyId $PolicyId `
+    -ContentUri $ContentUri `
+    -DisplayName '(AzureArcJumpstart) [Windows] Custom configuration' `
+    -Description 'Azure Arc Jumpstart Windows demo configuration' `
+    -Path  $OutputPath `
+    -Platform 'Windows' `
+    -PolicyVersion 1.0.0 `
+    -Mode ApplyAndAutoCorrect `
+    -Verbose -OutVariable Policy
 
-  $PolicyParameterObject = @{'IncludeArcMachines'='true'}
+    $PolicyParameterObject = @{'IncludeArcMachines'='true'}
 
-  New-AzPolicyDefinition -Name '(AzureArcJumpstart) [Windows] Custom configuration' -Policy $Policy.Path -OutVariable PolicyDefinition
-```
+    New-AzPolicyDefinition -Name '(AzureArcJumpstart) [Windows] Custom configuration' -Policy $Policy.Path -OutVariable PolicyDefinition
+  ```
 
 - Assign the Azure Policy definition to the target resource group.
 
-```PowerShell
-$ResourceGroup = Get-AzResourceGroup -Name $ResourceGroupName
+  ```PowerShell
+  $ResourceGroup = Get-AzResourceGroup -Name $ResourceGroupName
 
-New-AzPolicyAssignment -Name '(AzureArcJumpstart) [Windows] Custom configuration' -PolicyDefinition $PolicyDefinition[0] -Scope $ResourceGroup.ResourceId -PolicyParameterObject $PolicyParameterObject -IdentityType SystemAssigned -Location $Location -DisplayName '(AzureArcJumpstart) [Windows] Custom configuration' -OutVariable PolicyAssignment
-```
+  New-AzPolicyAssignment -Name '(AzureArcJumpstart) [Windows] Custom configuration' -PolicyDefinition $PolicyDefinition[0] -Scope $ResourceGroup.ResourceId -PolicyParameterObject $PolicyParameterObject -IdentityType SystemAssigned -Location $Location -DisplayName '(AzureArcJumpstart) [Windows] Custom configuration' -OutVariable PolicyAssignment
+  ```
 
 - In order for the newly assigned policy to remediate existing resources, the policy must be assigned a managed identity and a policy remediation must be performed.
 
-```PowerShell
-$PolicyAssignment = Get-AzPolicyAssignment -PolicyDefinitionId $PolicyDefinition.PolicyDefinitionId | Where-Object Name -eq '(AzureArcJumpstart) [Windows] Custom configuration'
+  ```PowerShell
+  $PolicyAssignment = Get-AzPolicyAssignment -PolicyDefinitionId $PolicyDefinition.PolicyDefinitionId | Where-Object Name -eq '(AzureArcJumpstart) [Windows] Custom configuration'
 
-$roleDefinitionIds =  $PolicyDefinition.Properties.policyRule.then.details.roleDefinitionIds
+  $roleDefinitionIds =  $PolicyDefinition.Properties.policyRule.then.details.roleDefinitionIds
 
-# Wait for eventual consistency
-Start-Sleep 20
+  # Wait for eventual consistency
+  Start-Sleep 20
 
-if ($roleDefinitionIds.Count -gt 0)
- {
-     $roleDefinitionIds | ForEach-Object {
-         $roleDefId = $_.Split("/") | Select-Object -Last 1
-         New-AzRoleAssignment -Scope $resourceGroup.ResourceId -ObjectId $PolicyAssignment.Identity.PrincipalId -RoleDefinitionId $roleDefId
-     }
- }
+  if ($roleDefinitionIds.Count -gt 0)
+   {
+       $roleDefinitionIds | ForEach-Object {
+           $roleDefId = $_.Split("/") | Select-Object -Last 1
+           New-AzRoleAssignment -Scope $resourceGroup.ResourceId -ObjectId $PolicyAssignment.Identity.PrincipalId -RoleDefinitionId $roleDefId
+       }
+   }
 
- $job = Start-AzPolicyRemediation -AsJob -Name ($PolicyAssignment.PolicyAssignmentId -split '/')[-1] -PolicyAssignmentId $PolicyAssignment.PolicyAssignmentId -ResourceGroupName $ResourceGroup.ResourceGroupName -ResourceDiscoveryMode ReEvaluateCompliance
-```
+   $job = Start-AzPolicyRemediation -AsJob -Name ($PolicyAssignment.PolicyAssignmentId -split '/')[-1] -PolicyAssignmentId $PolicyAssignment.PolicyAssignmentId -ResourceGroupName $ResourceGroup.ResourceGroupName -ResourceDiscoveryMode ReEvaluateCompliance
+  ```
 
 - To check policy compliance, in the Azure Portal, navigate to *Policy* -> *Compliance*
 
@@ -1709,11 +1690,10 @@ if ($roleDefinitionIds.Count -gt 0)
 
 - To verify that the operating system level settings are in place, run the following commands:
 
-```powershell
- Invoke-Command -VMName $Win2k19vmName -ScriptBlock { Get-LocalUser -Name arcboxuser1 } -Credential $winCreds
-
- Invoke-Command -VMName $Win2k19vmName -ScriptBlock {  Get-WindowsFeature -Name FS-SMB1 | select  DisplayName,Installed,InstallState} -Credential $winCreds
-```
+  ```powershell
+   Invoke-Command -VMName $Win2k19vmName -ScriptBlock { Get-LocalUser -Name arcboxuser1 } -Credential $winCreds
+   Invoke-Command -VMName $Win2k19vmName -ScriptBlock {  Get-WindowsFeature -Name FS-SMB1 | select  DisplayName,Installed,InstallState} -Credential $winCreds
+  ```
 
   ![Screenshot of VScode showing Azure Machine Configuration validation on Windows](./vscode_win_machine_config_validation.png)
 
@@ -1818,10 +1798,10 @@ In this first step, you will assign Azure resource tags to some of your Azure Ar
 
 - In the query window, enter and run the following query and examine the results which should show your Arc-enabled servers. Note the use of the KQL equals operator (=~) which is case insensitive [KQL =~ (equals) operator](https://learn.microsoft.com/azure/data-explorer/kusto/query/equals-operator).
 
-```shell
-Resources
-| where type =~ 'Microsoft.HybridCompute/machines'
-```
+  ```shell
+  Resources
+  | where type =~ 'Microsoft.HybridCompute/machines'
+  ```
 
   ![Screenshot of query to list arc servers](./query_arc_machines.png)
 
@@ -1831,26 +1811,26 @@ Resources
 
 To install the PowerShell module, run the following command
 
-```powershell
-Install-Module -Name Az.ResourceGraph
-```
+  ```powershell
+  Install-Module -Name Az.ResourceGraph
+  ```
 
 Then run the query in PowerShell
 
-```powershell
- Search-AzGraph -Query "Resources | where type =~ 'Microsoft.HybridCompute/machines'"
-```
+  ```powershell
+   Search-AzGraph -Query "Resources | where type =~ 'Microsoft.HybridCompute/machines'"
+  ```
 
 #### Task 4: Query your server inventory using the available metadata
 
 - Use PowerShell and the Resource Graph Explorer to summarize the server count by "logical cores" which is one of the detected properties referred to in the previous task. Remember to only use the query string, which is enclosed in double quotes, in the portal.
 
-```powershell
-Search-AzGraph -Query  "Resources
-| where type =~ 'Microsoft.HybridCompute/machines'
-| extend logicalCores = tostring(properties.detectedProperties.logicalCoreCount)
-| summarize serversCount = count() by logicalCores"
-```
+  ```powershell
+  Search-AzGraph -Query  "Resources
+  | where type =~ 'Microsoft.HybridCompute/machines'
+  | extend logicalCores = tostring(properties.detectedProperties.logicalCoreCount)
+  | summarize serversCount = count() by logicalCores"
+  ```
 
 - The Graph Explorer allows you to get a graphical view of your results by selecting the "charts" option.
 
@@ -1860,29 +1840,29 @@ Search-AzGraph -Query  "Resources
 
 - Let’s now build a query that uses the tag we assigned earlier to some of our Azure Arc-enabled servers. Use the following query that includes a check for resources that have a value for the Scenario tag. Feel free to use the portal of PowerShell. Check that the results match the servers that you set tags for earlier.
 
-```powershell
-Search-AzGraph -Query  "Resources
-| where type =~ 'Microsoft.HybridCompute/machines' and isnotempty(tags['Scenario'])
-| extend Scenario = tags['Scenario']
-| project name, tags"
-```
+  ```powershell
+  Search-AzGraph -Query  "Resources
+  | where type =~ 'Microsoft.HybridCompute/machines' and isnotempty(tags['Scenario'])
+  | extend Scenario = tags['Scenario']
+  | project name, tags"
+  ```
 
 #### Task 6: List the extensions installed on the Azure Arc-enabled servers.
 
 - Run the following advanced query which allows you to see what extensions are installed on the Arc-enabled servers. Notice that running the query in PowerShell requires us to escape the $ character as explained in [Escape Characters](https://learn.microsoft.com/azure/governance/resource-graph/concepts/query-language#escape-characters)
 
-```powershell
-Search-AzGraph -Query "Resources
-| where type == 'microsoft.hybridcompute/machines'
-| project id, JoinID = toupper(id), ComputerName = tostring(properties.osProfile.computerName), OSName = tostring(properties.osName)
-| join kind=leftouter(
-    Resources
-    | where type == 'microsoft.hybridcompute/machines/extensions'
-    | project MachineId = toupper(substring(id, 0, indexof(id, '/extensions'))), ExtensionName = name
-) on `$left.JoinID == `$right.MachineId
-| summarize Extensions = make_list(ExtensionName) by id, ComputerName, OSName
-| order by tolower(OSName) desc"
-```
+  ```powershell
+  Search-AzGraph -Query "Resources
+  | where type == 'microsoft.hybridcompute/machines'
+  | project id, JoinID = toupper(id), ComputerName = tostring(properties.osProfile.computerName), OSName = tostring(properties.osName)
+  | join kind=leftouter(
+      Resources
+      | where type == 'microsoft.hybridcompute/machines/extensions'
+      | project MachineId = toupper(substring(id, 0, indexof(id, '/extensions'))), ExtensionName = name
+  ) on `$left.JoinID == `$right.MachineId
+  | summarize Extensions = make_list(ExtensionName) by id, ComputerName, OSName
+  | order by tolower(OSName) desc"
+  ```
 
 - If you have used the portal to run the query then you should see something like the following
 
@@ -1892,13 +1872,13 @@ Search-AzGraph -Query "Resources
 
 - Azure Arc provides additional properties on the Azure Arc-enabled server resource that we can query with Resource Graph Explorer. In the following example, we list some of these key properties, like the Azure Arc Agent version installed on your Azure Arc-enabled servers
 
-```powershell
-Search-AzGraph -Query  "Resources
-| where type =~ 'Microsoft.HybridCompute/machines'
-| extend arcAgentVersion = tostring(properties.['agentVersion']), osName = tostring(properties.['osName']), osVersion = tostring(properties.['osVersion']), osSku = tostring(properties.['osSku']),
-lastStatusChange = tostring(properties.['lastStatusChange'])
-| project name, arcAgentVersion, osName, osVersion, osSku, lastStatusChange"
-```
+  ```powershell
+  Search-AzGraph -Query  "Resources
+  | where type =~ 'Microsoft.HybridCompute/machines'
+  | extend arcAgentVersion = tostring(properties.['agentVersion']), osName = tostring(properties.['osName']), osVersion = tostring(properties.['osVersion']), osSku = tostring(properties.['osSku']),
+  lastStatusChange = tostring(properties.['lastStatusChange'])
+  | project name, arcAgentVersion, osName, osVersion, osSku, lastStatusChange"
+  ```
 
 - Running the same query in the portal should result in something like the following
 
@@ -1944,24 +1924,24 @@ In this module you will use Azure Policy to Audit Arc-enabled Linux servers that
 - If you want to use **Powershell as an alternative method** to assign the policy, then the following procedure accomplishes the same as the portal method explained above.
     - create a policy parameter file, e.g. parameters.json
 
-    ```javascript
-    {
-      "IncludeArcMachines":{
-        "value":"true"
-      },
-      "ApplicationName": {
-        "value":"nano"
+      ```javascript
+      {
+        "IncludeArcMachines":{
+          "value":"true"
+        },
+        "ApplicationName": {
+          "value":"nano"
+        }
       }
-    }
-    ```
+      ```
 
     - Run the following powershell commands
 
-    ```powershell
-    $ResourceGroup = Get-AzResourceGroup -Name 'ArcBox-Levelup'
-    $Policy = Get-AzPolicyDefinition -BuiltIn | Where-Object {$_.Properties.DisplayName -eq 'Audit Linux machines that have the specified applications installed'} 
-    New-AzPolicyAssignment -Name '(Arc Levelup) Audit Linux machines with python3 installed' -PolicyDefinition $Policy -Scope $ResourceGroup.ResourceId -PolicyParameter .\parameters.json
-    ```
+      ```powershell
+      $ResourceGroup = Get-AzResourceGroup -Name 'ArcBox-Levelup'
+      $Policy = Get-AzPolicyDefinition -BuiltIn | Where-Object {$_.Properties.DisplayName -eq 'Audit Linux machines that have the specified applications installed'} 
+      New-AzPolicyAssignment -Name '(Arc Levelup) Audit Linux machines with python3 installed' -PolicyDefinition $Policy -Scope $ResourceGroup.ResourceId -PolicyParameter .\parameters.json
+      ```
 
 #### Task 2: Examine the policy compliance
 
@@ -1981,10 +1961,10 @@ In this module you will use Azure Policy to Audit Arc-enabled Linux servers that
 
 - NOTE (Optional): As mentioned at the beginning of this task, to force a policy scan we can use the [Start-AzPolicyComplianceScan powershell command](https://learn.microsoft.com/powershell/module/az.policyinsights/start-azpolicycompliancescan?view=azps-10.2.0). For example the following Powershell commands will focus the scan on our resource group, run the scan as a job and wait for it to complete in the background:
 
-```powershell
-$job = Start-AzPolicyComplianceScan  -ResourceGroupName "ArcBox-Levelup" -AsJob
-$job | Wait-Job
-```
+  ```powershell
+  $job = Start-AzPolicyComplianceScan  -ResourceGroupName "ArcBox-Levelup" -AsJob
+  $job | Wait-Job
+  ```
 
 #### Task 3: Using the "Guest Assignments" views directly
 
