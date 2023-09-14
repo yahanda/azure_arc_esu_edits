@@ -85,7 +85,7 @@ az account set -s $subscriptionId
 
 #!pwsh
 
-Get-module -Name Az.Accounts -listavailable
+Get-Module -Name Az.Accounts -listavailable
 
 #!markdown
 

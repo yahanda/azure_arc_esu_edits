@@ -96,7 +96,7 @@ ties in a sandbox environment. Screenshot below shows layout of the lab environm
 - [Install or update Azure PowerShell](https://learn.microsoft.com/powershell/azure/install-azps-windows?view=azps-10.3.0&tabs=windowspowershell&pivots=windows-psgallery). Use the below command to check if its installed.
 
   ```shell
-  Get-module -Name Az.Accounts -listavailable
+  Get-Module -Name Az.Accounts -listavailable
   ```
 
 - Login to Azure PowerShell the ```Connect-AzAccount``` command.
