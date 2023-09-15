@@ -1759,7 +1759,7 @@ Configuration AzureArcLevelUp_Windows
         MsiPackage PS7
         {
             ProductId = '{3E1D544C-E761-430F-B278-43E9FBFF0E4F}'
-            Path = 'https://github.com/PowerShell/PowerShell/releases/download/v7.3.2/PowerShell-7.3.2-win-x64.msi'
+            Path = 'https://github.com/PowerShell/PowerShell/releases/download/v7.3.6/PowerShell-7.3.6-win-x64.msi'
             Ensure = 'Present'
         }
         User ArcBoxUser
@@ -1905,14 +1905,7 @@ Write-Host "Copied!!"
 $scriptText = @"
 `$ResourceGroup = Get-AzResourceGroup -Name `$ResourceGroupName
 
-New-AzPolicyAssignment -Name '(AzureArcJumpstart) [Windows] Custom configuration' `
-                       -PolicyDefinition `$PolicyDefinition[0] `
-                       -Scope `$ResourceGroup.ResourceId `
-                       -PolicyParameterObject `$PolicyParameterObject `
-                       -IdentityType SystemAssigned `
-                       -Location `$Location `
-                       -DisplayName '(AzureArcJumpstart) [Windows] Custom configuration' `
-                       -OutVariable PolicyAssignment
+New-AzPolicyAssignment -Name '(AzureArcJumpstart) [Windows] Custom configuration' -PolicyDefinition `$PolicyDefinition[0] -Scope `$ResourceGroup.ResourceId -PolicyParameterObject `$PolicyParameterObject -IdentityType SystemAssigned -Location `$Location -DisplayName '(AzureArcJumpstart) [Windows] Custom configuration' -OutVariable PolicyAssignment
 "@
 
 Set-Clipboard -Value $scriptText | Out-Null
@@ -1986,6 +1979,7 @@ $scriptText = @"
 Write-Host "Creating VM Credentials"
 
 `$nestedWindowsUsername = "Administrator"
+`$nestedWindowsPassword = "ArcDemo123!!"
 
 `$secWindowsPassword = ConvertTo-SecureString `$nestedWindowsPassword -AsPlainText -Force
 
