@@ -989,7 +989,7 @@ Perform the following steps in order to enable and verify SSH configuration on b
 - RDP into the _ArcBox-Client_ VM
 - Open Hyper-V Manager
 - Right click _ArcBox-Win2K22_ and select Connect twice
-- Login to the operating system using username Administrator and the password you used when deploying ArcBox, by default this is **ArcPassword123!!**
+- Login to the operating system using username Administrator and the password you used when deploying ArcBox, by default this is **ArcDemo123!!**
 - Open Windows PowerShell and install OpenSSH for Windows by running the following:
 
   ```powershell
@@ -1518,7 +1518,7 @@ Due to using MOF-based DSC resources for the Windows demo-configuration, we are 
 
   ```PowerShell
   $storageaccountsuffix = -join ((97..122) | Get-Random -Count 5 | % {[char]$_})
-  New-AzStorageAccount -ResourceGroupName $resourceGroupName -Name "machineconfigstg$storageaccountsuffix" -SkuName 'Standard_LRS' -Location $Location -OutVariable storageaccount | New-AzStorageContainer -Name machineconfiguration -Permission Blob -EnableHttpsTrafficOnly $true
+  New-AzStorageAccount -ResourceGroupName $resourceGroupName -Name "machineconfigstg$storageaccountsuffix" -SkuName 'Standard_LRS' -Location $Location -OutVariable storageaccount -EnableHttpsTrafficOnly $true | New-AzStorageContainer -Name machineconfiguration -Permission Blob
   ```
 
 - Create the custom configuration
