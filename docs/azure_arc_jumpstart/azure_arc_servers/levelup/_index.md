@@ -1542,7 +1542,7 @@ Due to using MOF-based DSC resources for the Windows demo-configuration, we are 
           MsiPackage PS7
           {
               ProductId = '{3E1D544C-E761-430F-B278-43E9FBFF0E4F}'
-              Path = 'https://github.com/PowerShell/PowerShell/releases/download/v7.3.2/PowerShell-7.3.2-win-x64.msi'
+              Path = 'https://github.com/PowerShell/PowerShell/releases/download/v7.3.6/PowerShell-7.3.6-win-x64.msi'
               Ensure = 'Present'
           }
           User ArcBoxUser
@@ -1944,7 +1944,7 @@ In this module you will use Azure Policy to Audit Arc-enabled Linux servers that
 
       ```powershell
       $ResourceGroup = Get-AzResourceGroup -Name 'ArcBox-Levelup'
-      $Policy = Get-AzPolicyDefinition -BuiltIn | Where-Object {$_.Properties.DisplayName -eq 'Audit Linux machines that have the specified applications installed'} 
+      $Policy = Get-AzPolicyDefinition -BuiltIn | Where-Object {$_.Properties.DisplayName -eq 'Audit Linux machines that have the specified applications installed'}
       New-AzPolicyAssignment -Name '(Arc Levelup) Audit Linux machines with python3 installed' -PolicyDefinition $Policy -Scope $ResourceGroup.ResourceId -PolicyParameter .\parameters.json
       ```
 
