@@ -881,7 +881,7 @@ The following are required for this module to function:
 
 Currently, the policies to enable Change tracking and inventory with AMA are in preview. For a seamless policy experience, begin by enabling the _Microsoft.Compute/AutomaticExtensionUpgradePreview_ feature flag for your specific subscription. To register for this feature flag, go to Azure portal > Subscriptions > Select specific subscription name. In the Preview features, select Automatic Extension Upgrade Preview and then select Register.
 
-   ![Screenshot showing how to enable preview change tracking](./changetracking-enable.png)
+   ![Screenshot showing how to enable preview change tracking](https://raw.githubusercontent.com/microsoft/azure_arc/arc_servers_levelup/docs/azure_arc_jumpstart/azure_arc_servers/levelup/changetracking-enable.png)
 
 #### Current Limitations
 
@@ -903,13 +903,13 @@ Follow the link [here](https://learn.microsoft.com/azure/automation/change-track
 
 Verify that Change Tracking is enabled by going to the portal and selecting the windows server e.g. ArcBox-Win2K19 from Arc Machines. Select "Settings" from the "Change tracking" page:
 
-   ![Screenshot showing Change Tracking](./CT_1_verify-.png)
+   ![Screenshot showing Change Tracking](https://raw.githubusercontent.com/microsoft/azure_arc/arc_servers_levelup/docs/azure_arc_jumpstart/azure_arc_servers/levelup/CT_1_verify-.png)
 
 #### Task 2: Track changes in Windows services
 
 - From the "Change tracking" settings select "Windows Services" and change the "Collection Frequency" to 10 minutes.
 
-   ![Screenshot CT Windows Services settings](./CT_2_WinServices.png)
+   ![Screenshot CT Windows Services settings](https://raw.githubusercontent.com/microsoft/azure_arc/arc_servers_levelup/docs/azure_arc_jumpstart/azure_arc_servers/levelup/CT_2_WinServices.png)
 
 - Try stopping the "Print Spooler" service on the Arc machine ArcBox-Win2k19 using an administrative powershell session (or from the Services desktop application).
 
@@ -928,7 +928,7 @@ Write-Host "Copied!!"
 - The service changes will eventually show up in the "Change tracking" page for the server ArcBox-Win2K19.
 (By default Windows services status are updated every 30 minutes but you changed that to 10 minutes earlier to speed up the result for this task).
 
-   ![Screenshot CT Spooler stopped](./CT_3_WinServices-spooler.png)
+   ![Screenshot CT Spooler stopped](https://raw.githubusercontent.com/microsoft/azure_arc/arc_servers_levelup/docs/azure_arc_jumpstart/azure_arc_servers/levelup/CT_3_WinServices-spooler.png)
 
 - You can restart the spooler service on the server if you wish and change tracking will show the outcome in the portal after few minutes.
 
@@ -948,27 +948,27 @@ Write-Host "Copied!!"
 
 - Navigate to one of the Arc-enabled Windows machines and select "Change tracking" then select "Settings" then select "Windows Files". You should see the "Add windows file setting" screen on the right hand side. Configure these settings to track the changes to the file "c:\windows\system32\drivers\etc\hosts" and to upload the file content. 
 
-     ![Screenshot showing Edit windows file Settings](./CT_4_File-Settings.png)
+     ![Screenshot showing Edit windows file Settings](https://raw.githubusercontent.com/microsoft/azure_arc/arc_servers_levelup/docs/azure_arc_jumpstart/azure_arc_servers/levelup/CT_4_File-Settings.png)
 
 - Now set the file location where changed files will be uploaded. You should have a storage account deployed in the resource group of this level-up.
 
-     ![Screenshot showing Storage Account Settings](./CT_5_File-Location.png)
+     ![Screenshot showing Storage Account Settings](https://raw.githubusercontent.com/microsoft/azure_arc/arc_servers_levelup/docs/azure_arc_jumpstart/azure_arc_servers/levelup/CT_5_File-Location.png)
 
 - Navigate to the storage account. Click on "Containers" and you should see a container created automatically for you by Azure Change Tracking.
 
-     ![Screenshot storage container for CT](./CT_6_CT-Storage-Container.png)
+     ![Screenshot storage container for CT](https://raw.githubusercontent.com/microsoft/azure_arc/arc_servers_levelup/docs/azure_arc_jumpstart/azure_arc_servers/levelup/CT_6_CT-Storage-Container.png)
 
   - Click on the "changetrackingblob" container, and in the next page select "Access Control (IAM)", then on "Add role assignment"
 
-     ![Screenshot blob IAM](./CT_7_CT-Storage-Container-Access.png)
+     ![Screenshot blob IAM](https://raw.githubusercontent.com/microsoft/azure_arc/arc_servers_levelup/docs/azure_arc_jumpstart/azure_arc_servers/levelup/CT_7_CT-Storage-Container-Access.png)
 
   - Select the Storage Blob Data Contributor role
 
-     ![Screenshot blob contributor](./CT_8_CT-BlobDataContributor.png)
+     ![Screenshot blob contributor](https://raw.githubusercontent.com/microsoft/azure_arc/arc_servers_levelup/docs/azure_arc_jumpstart/azure_arc_servers/levelup/CT_8_CT-BlobDataContributor.png)
 
   - Assign the role to the Windows Arc enabled machines managed identity.
 
-     ![Screenshot assign VM data contributor role](./CT_9_CT-BlobDataContributor-VM.png)
+     ![Screenshot assign VM data contributor role](https://raw.githubusercontent.com/microsoft/azure_arc/arc_servers_levelup/docs/azure_arc_jumpstart/azure_arc_servers/levelup/CT_9_CT-BlobDataContributor-VM.png)
 
 
 - Modify the hosts file on the "ArcBox-Win2K19" machine (c:\Windows\System32\Drivers\etc\hosts).
