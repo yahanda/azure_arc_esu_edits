@@ -863,7 +863,7 @@ The following are required for this module to function:
 
 Currently, the policies to enable Change tracking and inventory with AMA are in preview. For a seamless policy experience, begin by enabling the _Microsoft.Compute/AutomaticExtensionUpgradePreview_ feature flag for your specific subscription. To register for this feature flag, go to Azure portal > Subscriptions > Select specific subscription name. In the Preview features, select Automatic Extension Upgrade Preview and then select Register.
 
-![Screenshot showing how to enable preview change tracking](./changetracking-enable.png)
+   ![Screenshot showing how to enable preview change tracking](./changetracking-enable.png)
 
 #### Current Limitations
 
@@ -885,13 +885,13 @@ Follow the link [here](https://learn.microsoft.com/azure/automation/change-track
 
 Verify that Change Tracking is enabled by going to the portal and selecting the windows server e.g. ArcBox-Win2K19 from Arc Machines. Select "Settings" from the "Change tracking" page:
 
-![Screenshot showing Change Tracking](./CT_1_verify-.png)
+   ![Screenshot showing Change Tracking](./CT_1_verify-.png)
 
 #### Task 2: Track changes in Windows services
 
 - From the "Change tracking" settings select "Windows Services" and change the "Collection Frequency" to 10 minutes.
 
-![Screenshot CT Windows Services settings](./CT_2_WinServices.png)
+   ![Screenshot CT Windows Services settings](./CT_2_WinServices.png)
 
 - Try stopping the "Print Spooler" service on the Arc machine ArcBox-Win2k19 using an administrative powershell session (or from the Services desktop application).
 
@@ -902,10 +902,11 @@ Verify that Change Tracking is enabled by going to the portal and selecting the 
 - The service changes will eventually show up in the "Change tracking" page for the server ArcBox-Win2K19.
 (By default Windows services status are updated every 30 minutes but you changed that to 10 minutes earlier to speed up the result for this task).
 
-![Screenshot CT Spooler stopped](./CT_3_WinServices-spooler.png)
+   ![Screenshot CT Spooler stopped](./CT_3_WinServices-spooler.png)
 
 - You can restart the spooler service on the server if you wish and change tracking will show the outcome in the portal after few minutes.
-```PowerShell
+
+  ```PowerShell
   Start-Service spooler
   ```
 
@@ -958,9 +959,9 @@ Verify that Change Tracking is enabled by going to the portal and selecting the 
 
 - In the Logs search, look for content changes to the hosts file with the query.
 
-```shell
-ConfigurationChange | where FieldsChanged contains "FileContentChecksum" and FileSystemPath == "c:\\windows\\system32\\drivers\\etc\\hosts"
-```
+   ```shell
+   ConfigurationChange | where FieldsChanged contains "FileContentChecksum" and FileSystemPath == "c:\\windows\\system32\\drivers\\etc\\hosts"
+   ```
 
 - In Log Analytics, alerts are always created based on log analytics query result.
 
