@@ -1021,6 +1021,7 @@ or
 ## Run this cell to copy the commands to your Clipboard
 
 $cmdlet = "Install-Module -Name Az.Ssh -Scope CurrentUser -Repository PSGallery
+
 Install-Module -Name Az.Ssh.ArcProxy -Scope CurrentUser -Repository PSGallery"
 Set-Clipboard -Value $cmdlet | Out-Null
 

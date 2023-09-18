@@ -858,11 +858,10 @@ Change Tracking and Inventory is an built-in Azure service, provided by Azure Au
 
 The following are required for this module to function:
 
-1. Ensure that the servers are already on-boarded to Azure Arc.
-2. Ensure that the Azure Monitor agent (AMA) is already deployed on every Arc-enabled server
-3. Ensure that the servers are already enrolled in Defender for Servers (this is required for File Integrity Monitoring)
+1. Ensure that the servers are already on-boarded to Azure Arc (As in Module 1).
+2. Ensure that the Azure Monitor agent (AMA) is already deployed on every Arc-enabled server (As in Module 2).
 
-Currently, the policies to enable Change tracking and inventory with AMA are in preview. For a seamless policy experience, we recommend that you begin by enabling the _Microsoft.Compute/AutomaticExtensionUpgradePreview_ feature flag for your specific subscription. To register for this feature flag, go to Azure portal > Subscriptions > Select specific subscription name. In the Preview features, select Automatic Extension Upgrade Preview and then select Register.
+Currently, the policies to enable Change tracking and inventory with AMA are in preview. For a seamless policy experience, begin by enabling the _Microsoft.Compute/AutomaticExtensionUpgradePreview_ feature flag for your specific subscription. To register for this feature flag, go to Azure portal > Subscriptions > Select specific subscription name. In the Preview features, select Automatic Extension Upgrade Preview and then select Register.
 
 ![Screenshot showing how to enable preview change tracking](./changetracking-enable.png)
 
@@ -872,53 +871,74 @@ The following table lists the current limitations for Change Tracking And Invent
 
 https://learn.microsoft.com/azure/automation/change-tracking/overview-monitoring-agent?tabs=win-az-vm#current-limitations
 
-Ensure that you have the correct region mappings for Azure Automation account and Log Analytics workspace as not all regions support both. More information can be found [here](https://learn.microsoft.com/azure/automation/how-to/region-mappings).
 
-#### Task 1: Enabling Change Tracking and Inventory
+#### Task 1: Enabling Change Tracking
 
 > **NOTE: This task usually requires the following:
 
->1. Creation of an Automation Account.
->2. Linking the Automation Account to Log Analytics.
->3. Enabling Change Tracking on the Automation Account.
->4. Setting up a Data Collection Rule that would collect the right events and data.
->5. Creating an Azure policy to onboard your Arc-enabled machines to Change Tracking.
+>1. Setting up a Data Collection Rule that would collect the right events and data.
+>2. Creating an Azure policy to onboard your Arc-enabled machines to Change Tracking.
 **
 
-For the purposes of this levelup - these tasks have all been done for you, so you do not need to them manually.
+For the purposes of this levelup - these tasks have all been done for you, so you do not need to do them manually.
 Follow the link [here](https://learn.microsoft.com/azure/automation/change-tracking/enable-vms-monitoring-agent?tabs=multiplevms%2Carcvm) to know how to do these yourself in future.
 
-Verify that Change Tracking and Inventory is now enabled and the Arc VMs are reporting status:
+Verify that Change Tracking is enabled by going to the portal and selecting the windows server e.g. ArcBox-Win2K19 from Arc Machines. Select "Settings" from the "Change tracking" page:
 
-![Screenshot showing Inventory](./changetracking-enable-inv.png)
+![Screenshot showing Change Tracking](./CT_1_verify-.png)
 
-#### Task 2: Using Change Tracking
+#### Task 2: Track changes in Windows services
 
-- Try stopping and starting services on the Arc machine ArcBox-Win2k19 using an administrative powershell session.
+- From the "Change tracking" settings select "Windows Services" and change the "Collection Frequency" to 10 minutes.
+
+![Screenshot CT Windows Services settings](./CT_2_WinServices.png)
+
+- Try stopping the "Print Spooler" service on the Arc machine ArcBox-Win2k19 using an administrative powershell session (or from the Services desktop application).
 
   ```PowerShell
   Stop-Service spooler
-  Start-service spooler
   ```
 
-- The service changes will eventually show up in the portal
-(By default Windows services status are updated every 30 minutes)
+- The service changes will eventually show up in the "Change tracking" page for the server ArcBox-Win2K19.
+(By default Windows services status are updated every 30 minutes but you changed that to 10 minutes earlier to speed up the result for this task).
 
-#### Task 3: Manage Change Tracking
+![Screenshot CT Spooler stopped](./CT_3_WinServices-spooler.png)
 
-- Navigate to one of the Arc-enabled Windows machines and select _Change Tracking_. You can change the types of data collected and how often (for example, 60s for specific CPU and RAM counters, or 1 hour for file changes.)
+- You can restart the spooler service on the server if you wish and change tracking will show the outcome in the portal after few minutes.
+```PowerShell
+  Start-Service spooler
+  ```
 
-    ![Screenshot showing Edit Settings](./changetracking-editsettings.png)
 
-- First, make sure that a storage account is already created for file uploads.
+#### Task 3: Track File Changes
 
-    ![Screenshot showing Storage Account Settings](./changetracking-storageaccount.png)
+- Navigate to one of the Arc-enabled Windows machines and select "Change tracking" then select "Settings" then select "Windows Files". You should see the "Add windows file setting" screen on the right hand side. Configure these settings to track the changes to the file "c:\windows\system32\drivers\etc\hosts" and to upload the file content. 
 
-- Then add files that you want to monitor, for example, the hosts file.
 
-    ![Screenshot showing add file monitoring](./changetracking-addfilemonitoring.png)
+  ![Screenshot showing Edit windows file Settings](./CT_4_File-Settings.png)
 
-- Modify the hosts file on the _ArcBox-Win2K22_ machine (c:\Windows\System32\Drivers\etc\hosts).
+- Now set the file location where changed files will be uploaded. You should have a storage account deployed in the resource group of this level-up.
+
+  ![Screenshot showing Storage Account Settings](./CT_5_File-Location.png)
+
+- Navigate to the storage account. Click on "Containers" and you should see a container created automatically for you by Azure Change Tracking.
+
+  ![Screenshot storage container for CT](./CT_6_CT-Storage-Container.png)
+
+  - Click on the "changetrackingblob" container, and in the next page select "Access Control (IAM)", then on "Add role assignment"
+
+  ![Screenshot blob IAM](./CT_7_CT-Storage-Container-Access.png)
+
+  - Select the Storage Blob Data Contributor role
+
+  ![Screenshot blob contributor](./CT_8_CT-BlobDataContributor.png)
+
+  - Assign the role to the Windows Arc enabled machines managed identity.
+  
+  ![Screenshot assign VM data contributor role](./CT_9_CT-BlobDataContributor-VM.png)
+
+
+- Modify the hosts file on the "ArcBox-Win2K19" machine (c:\Windows\System32\Drivers\etc\hosts).
 
 > **NOTE: To modify the hosts file, open _Notepad_ as administrator, select File>Open, and then browse to c:\Windows\System32\Drivers\etc\hosts file**
 
@@ -928,18 +948,18 @@ Verify that Change Tracking and Inventory is now enabled and the Arc VMs are rep
   1.1.1.1      www.fakehost.com
   ```
 
-- Eventually, the file changes will show up in the portal.
+- Eventually, the file changes will show up in the change tracking page of the machine. The file changed content will also be uploaded to the "changetrackingblob" storage container.
 
 #### Task 4: Alert Configuration
 
 - If you want to be alerted when someone changes a host file on any one of your server, then configure alerting.
 
-- On the Change tracking page from your Arc-enabled machine, select _Log Analytics_.
+- On the Change tracking page from your Arc-enabled machine, select "Log Analytics".
 
-- In the Logs search, look for content changes to the hosts file with the query .
+- In the Logs search, look for content changes to the hosts file with the query.
 
 ```shell
-ConfigurationChange | where FieldsChanged contains "FileContentChecksum" and FileSystemPath == "c:\windows\system32\drivers\etc\hosts"
+ConfigurationChange | where FieldsChanged contains "FileContentChecksum" and FileSystemPath == "c:\\windows\\system32\\drivers\\etc\\hosts"
 ```
 
 - In Log Analytics, alerts are always created based on log analytics query result.
