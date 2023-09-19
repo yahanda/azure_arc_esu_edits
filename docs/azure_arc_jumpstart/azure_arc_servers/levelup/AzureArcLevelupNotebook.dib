@@ -1120,7 +1120,7 @@ From the _ArcBox-Client_ VM, open a PowerShell session and use the below command
 $scriptText = @"
 `$serverName = "ArcBox-Ubuntu-01"`
 `$localUser = `"arcdemo"
-`
+
 az ssh arc --resource-group `$Env:resourceGroup --name `$serverName --local-user `$localUser
 "@
 
@@ -1141,7 +1141,7 @@ or
 $scriptText = @"
 `$serverName = "ArcBox-Ubuntu-01"`
 `$localUser = `"arcdemo"
-`
+
 Enter-AzVM -ResourceGroupName `$Env:resourceGroup -Name `$serverName -LocalUser `$localUser
 "@
 
@@ -1173,7 +1173,7 @@ Following the previous method, connect to _ArcBox-Win2K22_ via SSH.
 $scriptText = @"
 `$serverName = "ArcBox-Win2K22"`
 `$localUser = `"Administrator"
-`
+
 az ssh arc --resource-group `$Env:resourceGroup --name `$serverName --local-user `$localUser
 "@
 
@@ -1193,7 +1193,7 @@ or
 $scriptText = @"
 `$serverName = "ArcBox-Win2K22"`
 `$localUser = `"Administrator"
-`
+
 Enter-AzVM -ResourceGroupName `$Env:resourceGroup -Name `$serverName -LocalUser `$localUser
 "@
 
@@ -1218,7 +1218,7 @@ In addition to SSH, you can also connect to the Azure Arc-enabled servers, Windo
 $scriptText = @"
 `$serverName = "ArcBox-Win2K22"`
 `$localUser = `"Administrator"
-`
+
 az ssh arc --resource-group `$Env:resourceGroup --name `$serverName --local-user `$localUser --rdp
 "@
 
@@ -1238,7 +1238,7 @@ or
 $scriptText = @"
 `$serverName = "ArcBox-Win2K22"`
 `$localUser = `"Administrator"
-`
+
 Enter-AzVM -ResourceGroupName `$Env:resourceGroup -Name `$serverName -LocalUser `$localUser -Rdp
 "@
 
@@ -1260,7 +1260,7 @@ The `Azure AD based SSH Login – Azure Arc` VM extension can be added from the 
 
 $scriptText = @"
 `$serverName = "ArcBox-Ubuntu-01"
-`
+
 az connectedmachine extension create --machine-name `$serverName --resource-group `$Env:resourceGroup --publisher Microsoft.Azure.ActiveDirectory --name AADSSHLogin --type AADSSHLoginForLinux --location `$env:azureLocation
 "@
 
@@ -1291,7 +1291,7 @@ az login
 
 `$serverName = "ArcBox-Ubuntu-01"`
 `$localUser = "arcdemo"
-`
+
 az ssh arc --resource-group `$Env:resourceGroup --name `$serverName
 "@
 
@@ -1317,7 +1317,7 @@ Connect-AzAccount
 
 `$serverName = "ArcBox-Ubuntu-01"
 `$localUser = "Administrator"
-`
+
 Enter-AzVM -ResourceGroupName `$Env:resourceGroup -Name `$serverName
 "@
 
@@ -1755,7 +1755,7 @@ Due to using MOF-based DSC resources for the Windows demo-configuration, we are 
 
 $scriptText = @"
 `$storageaccountsuffix = -join ((97..122) | Get-Random -Count 5 | % {[char]`$_})
-`
+
 New-AzStorageAccount -ResourceGroupName `$resourceGroupName -Name "machineconfigstg`$storageaccountsuffix" -SkuName 'Standard_LRS' -Location `$Location -OutVariable storageaccount -EnableHttpsTrafficOnly `$true | New-AzStorageContainer -Name machineconfiguration  -Permission Blob
 "@
 
@@ -1810,11 +1810,11 @@ Configuration AzureArcLevelUp_Windows
 Write-Host "Creating credentials for arcbox user 1"
 `$nestedWindowsUsername = "arcboxuser1"
 `$nestedWindowsPassword = "ArcDemo123!!"  # In real-world scenarios this could be retrieved from an Azure Key Vault
-`
+
 # Create Windows credential object
 `$secWindowsPassword = ConvertTo-SecureString `$nestedWindowsPassword -AsPlainText -Force
 `$winCreds = New-Object System.Management.Automation.PSCredential (`$nestedWindowsUsername, `$secWindowsPassword)
-`
+
 `$ConfigurationData = @{
     AllNodes = @(
         @{
@@ -1890,10 +1890,10 @@ Write-Host "Copied!!"
 
 $scriptText = @"
 `$StorageAccount = Get-AzStorageAccount -Name "machineconfigstg`$storageaccountsuffix" -ResourceGroupName `$ResourceGroupName
-`
+
 `$StorageAccountKey = Get-AzStorageAccountKey -Name `$storageaccount.StorageAccountName -ResourceGroupName `$storageaccount.ResourceGroupName
 `$Context = New-AzStorageContext -StorageAccountName `$storageaccount.StorageAccountName -StorageAccountKey `$StorageAccountKey[0].Value
-`
+
 Set-AzStorageBlobContent -Container "machineconfiguration" -File  "`$OutputPath/AzureArcLevelUp_Windows.zip" -Blob "AzureArcLevelUp_Windows.zip" -Context `$Context -Force
 
 `$contenturi = New-AzStorageBlobSASToken -Context `$Context -FullUri -Container machineconfiguration -Blob "AzureArcLevelUp_Windows.zip" -Permission r
@@ -1913,11 +1913,11 @@ Write-Host "Copied!!"
 
 $scriptText = @"
 `$PolicyId = (New-Guid).Guid
-`
+
 New-GuestConfigurationPolicy -PolicyId `$PolicyId -ContentUri `$ContentUri -DisplayName '(AzureArcJumpstart) [Windows] Custom configuration' -Description 'Azure Arc Jumpstart Windows demo configuration' -Path  `$OutputPath -Platform 'Windows' -PolicyVersion 1.0.0 -Mode ApplyAndAutoCorrect -Verbose -OutVariable Policy
 
 `$PolicyParameterObject = @{'IncludeArcMachines'='true'}
-`
+
 New-AzPolicyDefinition -Name '(AzureArcJumpstart) [Windows] Custom configuration' -Policy `$Policy.Path -OutVariable PolicyDefinition
 "@
 
@@ -1935,7 +1935,7 @@ Write-Host "Copied!!"
 
 $scriptText = @"
 `$ResourceGroup = Get-AzResourceGroup -Name `$ResourceGroupName
-`
+
 New-AzPolicyAssignment -Name '(AzureArcJumpstart) [Windows] Custom configuration' -PolicyDefinition `$PolicyDefinition[0] -Scope `$ResourceGroup.ResourceId -PolicyParameterObject `$PolicyParameterObject -IdentityType SystemAssigned -Location `$Location -DisplayName '(AzureArcJumpstart) [Windows] Custom configuration' -OutVariable PolicyAssignment
 "@
 
@@ -1955,7 +1955,7 @@ $scriptText = @"
 `$PolicyAssignment = Get-AzPolicyAssignment -PolicyDefinitionId `$PolicyDefinition.PolicyDefinitionId | Where-Object Name -eq '(AzureArcJumpstart) [Windows] Custom configuration'
 
 `$roleDefinitionIds =  `$PolicyDefinition.Properties.policyRule.then.details.roleDefinitionIds
-`
+
 # Wait for eventual consistency
 Start-Sleep 20
 
@@ -2015,7 +2015,7 @@ Write-Host "Creating VM Credentials"
 `$secWindowsPassword = ConvertTo-SecureString `$nestedWindowsPassword -AsPlainText -Force
 
 `$winCreds = New-Object System.Management.Automation.PSCredential (`$nestedWindowsUsername, `$secWindowsPassword)
-`
+
 Invoke-Command -VMName `$Win2k19vmName -ScriptBlock { Get-LocalUser -Name arcboxuser1 } -Credential `$winCreds
 
 Invoke-Command -VMName `$Win2k19vmName -ScriptBlock {  Get-WindowsFeature -Name FS-SMB1 | select  DisplayName,Installed,InstallState} -Credential `$winCreds
